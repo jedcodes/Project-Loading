@@ -55,17 +55,32 @@ package "Interactive Theater Web Application" {
         +void handleSecurityChecks()
     }
 
+    class API_Documentation {
+        +void displayEndpointInformation()
+        +void displayRequestFormats()
+        +void displayResponseFormats()
+    }
+
+    class EnvironmentalConfig {
+        +void setupDevelopmentConfig()
+        +void setupProductionConfig()
+        +void setupTestingConfig()
+    }
+
     FrontPage --> Server : Uses
     GamePage --> Server : Uses
     AdminPage --> Server : Uses
     StatsPage --> Server : Uses
     SupportPage --> Server : Uses
-
     FrontPage "1" -- "1" GamePage : Navigates
     AdminPage "1" -- "1" GamePage : Controls
     AdminPage "1" -- "1" StatsPage : Updates
     StatsPage "1" -- "1" Server : Interacts
     SupportPage "1" -- "1" GamePage : Assists
+    GamePage --> API_Documentation : Consults
+    AdminPage --> API_Documentation : Consults
+    API_Documentation ..> Server : Describes
+    Server --> EnvironmentalConfig : Configured by
 
 }
 
