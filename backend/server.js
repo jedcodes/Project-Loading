@@ -18,12 +18,10 @@ import connectDB from './src/config/db.js';
 import { setupSocket } from './src/config/socketConfig.js';
 import authRouter from './src/routes/auth.js';
 import gameRouter from './src/routes/gameRoutes.js';
+import userRouter from './src/routes/userRoutes.js'; // Import the new user routes
 import API_Documentation from './src/API_Documentation.js';
 
-// Load environment variables from .env file
 dotenv.config({ path: './src/config/config.env' });
-
-// Connect to the database
 connectDB();
 
 const app = express();
@@ -74,6 +72,7 @@ app.use((req, res, next) => {
 // Routes setup
 app.use('/auth', authRouter);
 app.use('/game', gameRouter);
+app.use('/user', userRouter); // Add user routes
 
 // API Documentation setup (if applicable)
 const apiDocs = new API_Documentation(app);

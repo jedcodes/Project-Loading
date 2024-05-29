@@ -14,15 +14,19 @@ function setupSocket(server) {
     io.on('connection', (socket) => {
         console.log('A user connected:', socket.id);
 
+        socket.on('disconnect', () => {
+            console.log('User disconnected:', socket.id);
+        });
+
         socket.on('joinGame', (gameId) => {
             socket.join(gameId);
-            console.log(`A user joined game room: ${gameId}`);
+            console.log('A user joined game room:', gameId);
             io.to(gameId).emit('newPlayer', { message: `New player joined game ${gameId}` });
         });
 
         socket.on('leaveGame', (gameId) => {
             socket.leave(gameId);
-            console.log(`A user left game room: ${gameId}`);
+            console.log('A user left game room:', gameId);
             io.to(gameId).emit('playerLeft', { message: `A player left game ${gameId}` });
         });
 
@@ -31,8 +35,9 @@ function setupSocket(server) {
             socket.to(data.gameId).emit('gameUpdate', data);
         });
 
-        socket.on('disconnect', () => {
-            console.log('A user disconnected:', socket.id);
+        socket.on('validateRecoveryCode', (recoveryCode) => {
+            // Add logic to handle recovery code validation if needed
+            console.log('Recovery code received:', recoveryCode);
         });
     });
 

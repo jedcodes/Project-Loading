@@ -5,9 +5,8 @@ import {
     updateGame,
     startGameSequence,
     endGameSequence,
-    validateRecoveryCode,
     getUserStats,
-    loadMiniGame 
+    loadMiniGame // Import the loadMiniGame function
 } from '../controllers/gameController.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
@@ -15,7 +14,6 @@ const router = express.Router();
 
 // Validation middleware
 const gameIdValidation = param('gameId').isMongoId().withMessage('Invalid Game ID format');
-const recoveryCodeValidation = param('recoveryCode').isLength({ min: 8 }).withMessage('Invalid recovery code format');
 
 // Route to get the current game state
 router.get('/:gameId', isAuthenticated, gameIdValidation, getGame);
@@ -28,9 +26,6 @@ router.post('/:gameId/start', isAuthenticated, isAdmin, gameIdValidation, startG
 
 // Route to end the game sequence and show stats
 router.post('/:gameId/end', isAuthenticated, isAdmin, gameIdValidation, endGameSequence);
-
-// Route to validate a recovery code and re-enter the game
-router.get('/recovery/:recoveryCode', isAuthenticated, recoveryCodeValidation, validateRecoveryCode);
 
 // Route to get user stats at the end of the game
 router.get('/:gameId/stats', isAuthenticated, gameIdValidation, getUserStats);

@@ -1,25 +1,4 @@
-const mongoose = require('mongoose');
-
-const playerSchema = new mongoose.Schema({
-    username: { 
-        type: String, 
-        required: true, 
-        unique: true  // Ensure usernames are unique within a game session
-    },
-    score: {
-        type: Number,
-        default: 0  // Default score setup
-    },
-    state: {
-        type: Map,
-        of: mongoose.Schema.Types.Mixed,  // Allows storing a flexible object
-        default: {}
-    },
-    recoveryCode: {
-        type: String,
-        default: () => Math.random().toString(36).substring(2, 15)  // Generate a simple recovery code
-    }
-}, { _id: false });
+import mongoose from 'mongoose';
 
 const gameSchema = new mongoose.Schema({
     currentGameIndex: {
@@ -40,7 +19,10 @@ const gameSchema = new mongoose.Schema({
             default: 'standard'
         }
     },
-    players: [playerSchema],
+    players: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     isActive: {
         type: Boolean,
         default: false
@@ -62,4 +44,4 @@ gameSchema.pre('save', function(next) {
 });
 
 const Game = mongoose.model('Game', gameSchema);
-module.exports = Game;
+export default Game;

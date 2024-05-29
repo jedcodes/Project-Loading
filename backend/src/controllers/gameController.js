@@ -1,13 +1,12 @@
 import Game from '../models/game.js';
+import User from '../models/user.js';
+import MiniGame from '../models/miniGame.js';
 import { io } from '../config/socketConfig.js';
-import { trykkeReaksjoner, svarPåSpørsmål, musikkquiz } from '../miniGames/gameIndex.js';
-
-const miniGames = { trykkeReaksjoner, svarPåSpørsmål, musikkquiz };
 
 // Fetch current game state
 export const getGame = async (req, res) => {
     try {
-        const game = await Game.findById(req.params.gameId);
+        const game = await Game.findById(req.params.gameId).populate('players');
         if (!game) {
             return res.status(404).json({ message: "Game not found" });
         }
@@ -25,7 +24,8 @@ export const loadMiniGame = async (req, res) => {
             return res.status(404).json({ message: 'Game not found' });
         }
 
-        const currentMiniGame = miniGames[game.sequence[game.currentGameIndex]];
+        const currentMiniGameName = game.sequence[game.currentGameIndex];
+        const currentMiniGame = await MiniGame.findOne({ name: currentMiniGameName });
         if (!currentMiniGame) {
             return res.status(404).json({ message: 'Mini-game not found' });
         }
@@ -43,10 +43,12 @@ export const loadMiniGame = async (req, res) => {
     }
 };
 
+// Other controller functions remain unchanged
+
 // Update game based on user actions
 export const updateGame = async (req, res) => {
     try {
-        const game = await Game.findByIdAndUpdate(req.params.gameId, { $set: req.body }, { new: true });
+        const game = await Game.findByIdAndUpdate(req.params.gameId, { $set: req.body }, { new: true }).populate('players');
         if (!game) {
             return res.status(404).json({ message: "Game not found" });
         }
@@ -93,27 +95,10 @@ export const endGameSequence = async (req, res) => {
     }
 };
 
-// Validate recovery code
-export const validateRecoveryCode = async (req, res) => {
-    try {
-        const game = await Game.findOne({
-            players: { $elemMatch: { recoveryCode: req.params.recoveryCode } }
-        });
-        if (!game) {
-            return res.status(404).json({ message: 'Invalid recovery code' });
-        }
-        res.json({ message: 'Recovery successful', game });
-        // Notify clients about the successful recovery
-        io.emit('recoverySuccess', { gameId: game._id, userId: req.params.userId }); // Assuming userId is available
-    } catch (error) {
-        res.status(500).json({ message: 'Error validating recovery code', error });
-    }
-};
-
 // Get user stats
 export const getUserStats = async (req, res) => {
     try {
-        const game = await Game.findById(req.params.gameId);
+        const game = await Game.findById(req.params.gameId).populate('players');
         if (!game) {
             return res.status(404).json({ message: 'Game not found' });
         }
