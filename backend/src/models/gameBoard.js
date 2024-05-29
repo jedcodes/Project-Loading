@@ -1,13 +1,18 @@
 import mongoose from 'mongoose';
 
-const gameSchema = new mongoose.Schema({
+const gameBoardSchema = new mongoose.Schema({
+    pinCode: {
+        type: String,
+        required: true,
+        unique: true
+    },
     currentGameIndex: {
         type: Number,
         default: 0
     },
-    sequence: [{ 
+    sequence: [{
         type: String,
-        ref: 'MiniGame'  // Assuming you might have a MiniGame model that details each game
+        ref: 'MiniGame'
     }],
     settings: {
         background: {
@@ -37,11 +42,5 @@ const gameSchema = new mongoose.Schema({
     }
 });
 
-// Middleware to handle updating the "updatedAt" field on save
-gameSchema.pre('save', function(next) {
-    this.updatedAt = new Date();
-    next();
-});
-
-const Game = mongoose.model('Game', gameSchema);
-export default Game;
+const GameBoard = mongoose.model('GameBoard', gameBoardSchema);
+export default GameBoard;

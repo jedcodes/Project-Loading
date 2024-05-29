@@ -1,4 +1,6 @@
 import User from '../models/user.js';
+import GameBoard from '../models/gameBoard.js';
+import { io } from '../config/socketConfig.js';
 
 // Fetch user data by ID
 export const getUserById = async (req, res) => {
@@ -27,15 +29,26 @@ export const updateUserScore = async (req, res) => {
     }
 };
 
-// Validate recovery code and retrieve user
-export const validateRecoveryCode = async (req, res) => {
+// Remove inactive user
+export const removeInactiveUser = async (req, res) => {
     try {
-        const user = await User.findOne({ recoveryCode: req.params.recoveryCode });
-        if (!user) {
-            return res.status(404).json({ message: 'Invalid recovery code' });
+        const { userId, gameBoardId } = req.params;
+        const gameBoard = await GameBoard.findById(gameBoardId);
+        if (!gameBoard) {
+            return res.status(404).json({ message: 'GameBoard not found' });
         }
-        res.json(user);
+
+        const userIndex = gameBoard.players.indexOf(userId);
+        if (userIndex !== -1) {
+            gameBoard.players.splice(userIndex, 1);
+            await gameBoard.save();
+            await User.findByIdAndDelete(userId);
+            res.json({ message: 'Inactive user removed' });
+            io.to(gameBoardId).emit('userRemoved', { userId });
+        } else {
+            res.status(404).json({ message: 'User not found in GameBoard' });
+        }
     } catch (error) {
-        res.status(500).json({ message: 'Error validating recovery code', error });
+        res.status(500).json({ message: 'Error removing inactive user', error });
     }
 };

@@ -13,12 +13,12 @@ import { fileURLToPath } from 'url';
 import helmet from 'helmet';
 import cors from 'cors';
 
-import './src/config/passport.js';
 import connectDB from './src/config/db.js';
+import './src/config/passport.js';
 import { setupSocket } from './src/config/socketConfig.js';
 import authRouter from './src/routes/auth.js';
-import gameRouter from './src/routes/gameRoutes.js';
-import userRouter from './src/routes/userRoutes.js'; // Import the new user routes
+import gameBoardRouter from './src/routes/gameBoardRoutes.js';
+import userRouter from './src/routes/userRoutes.js';
 import API_Documentation from './src/API_Documentation.js';
 
 dotenv.config({ path: './src/config/config.env' });
@@ -71,7 +71,7 @@ app.use((req, res, next) => {
 
 // Routes setup
 app.use('/auth', authRouter);
-app.use('/game', gameRouter);
+app.use('/gameboard', gameBoardRouter); // Add GameBoard routes
 app.use('/user', userRouter); // Add user routes
 
 // API Documentation setup (if applicable)

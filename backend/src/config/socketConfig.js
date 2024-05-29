@@ -1,4 +1,6 @@
 import { Server as SocketIOServer } from 'socket.io';
+import GameBoard from '../models/gameBoard.js';
+import User from '../models/user.js';
 
 let io;  // Declare io at the module level
 
@@ -14,30 +16,72 @@ function setupSocket(server) {
     io.on('connection', (socket) => {
         console.log('A user connected:', socket.id);
 
+        socket.on('joinGameBoard', async ({ pinCode, username }) => {
+            try {
+                const gameBoard = await GameBoard.findOne({ pinCode }).populate('players');
+                if (!gameBoard) {
+                    socket.emit('error', { message: 'Invalid pin code' });
+                    return;
+                }
+
+                // Check if username is unique within the gameBoard
+                const existingUser = gameBoard.players.find(player => player.username === username);
+                if (existingUser) {
+                    socket.emit('error', { message: 'Username already taken' });
+                    return;
+                }
+
+                // Create new user
+                const newUser = new User({ username });
+                await newUser.save();
+
+                // Add user to gameBoard
+                gameBoard.players.push(newUser._id);
+                await gameBoard.save();
+
+                socket.join(gameBoard._id.toString());
+                socket.emit('joinedGameBoard', { gameBoardId: gameBoard._id, userId: newUser._id });
+
+                io.to(gameBoard._id.toString()).emit('newPlayer', { message: `New player joined: ${username}` });
+            } catch (error) {
+                socket.emit('error', { message: 'Error joining gameBoard' });
+            }
+        });
+
+        socket.on('leaveGameBoard', async ({ gameBoardId, userId }) => {
+            try {
+                const gameBoard = await GameBoard.findById(gameBoardId);
+                if (!gameBoard) {
+                    socket.emit('error', { message: 'GameBoard not found' });
+                    return;
+                }
+
+                const userIndex = gameBoard.players.indexOf(userId);
+                if (userIndex !== -1) {
+                    gameBoard.players.splice(userIndex, 1);
+                    await gameBoard.save();
+                    await User.findByIdAndDelete(userId);
+
+                    socket.leave(gameBoardId);
+                    socket.emit('leftGameBoard', { message: 'User left the gameBoard' });
+
+                    io.to(gameBoardId).emit('playerLeft', { message: `Player left: ${userId}` });
+                } else {
+                    socket.emit('error', { message: 'User not found in GameBoard' });
+                }
+            } catch (error) {
+                socket.emit('error', { message: 'Error leaving gameBoard' });
+            }
+        });
+
         socket.on('disconnect', () => {
             console.log('User disconnected:', socket.id);
         });
 
-        socket.on('joinGame', (gameId) => {
-            socket.join(gameId);
-            console.log('A user joined game room:', gameId);
-            io.to(gameId).emit('newPlayer', { message: `New player joined game ${gameId}` });
-        });
-
-        socket.on('leaveGame', (gameId) => {
-            socket.leave(gameId);
-            console.log('A user left game room:', gameId);
-            io.to(gameId).emit('playerLeft', { message: `A player left game ${gameId}` });
-        });
-
-        socket.on('gameAction', (data) => {
-            console.log('Game action received:', data);
-            socket.to(data.gameId).emit('gameUpdate', data);
-        });
-
-        socket.on('validateRecoveryCode', (recoveryCode) => {
-            // Add logic to handle recovery code validation if needed
-            console.log('Recovery code received:', recoveryCode);
+        // Additional real-time events here
+        socket.on('sendAction', (data) => {
+            console.log('Action received:', data);
+            socket.broadcast.emit('actionReceived', data);
         });
     });
 
