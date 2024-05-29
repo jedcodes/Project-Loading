@@ -1,9 +1,5 @@
 function App() {
-  return (
-    <>
-      <h1>Hello React</h1>
-    </>
-  );
+  return <div className="hero-bg"></div>;
 }
 
 export default App;
