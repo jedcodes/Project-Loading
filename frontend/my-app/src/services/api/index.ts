@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios from 'axios'
+
 
 const BASE_URL = 'https://665654029f970b3b36c50619.mockapi.io'
 
