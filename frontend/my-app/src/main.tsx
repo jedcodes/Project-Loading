@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GamePage from "./pages/GamePage.tsx";
+import LobbyPage from "./pages/LobbyPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,11 @@ const router = createBrowserRouter([
     path: "/game",
     element: <GamePage />,
   },
+  {
+    path: "/lobby",
+    element: <LobbyPage />,
+  },
+
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
