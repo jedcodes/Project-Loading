@@ -1,23 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import GamePage from "./pages/GamePage.tsx";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import { BrowserRouter } from 'react-router-dom';
+import App from './pages/FirstPage';
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-  },
-  {
-    path: "/game",
-    element: <GamePage />,
-  },
-]);
-
-ReactDOM.createRoot(document.getElementById("root")!).render(
+// Renderer applikasjonen med ReactDOM
+ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

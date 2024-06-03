@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "tailwind-react-native-classnames": "^1.5.1"
+  }
+}

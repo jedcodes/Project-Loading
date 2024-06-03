@@ -15,3 +15,65 @@
     @apply absolute right-0 top-0 h-screen w-screen bg-hero bg-cover bg-center;
   }
 }
+
+/* Spinner-animasjon */
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid white;
+  width: 40px;
+  height: 40px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Styling for loading-teksten */
+.loading-text {
+  font-family: 'Arial', sans-serif; /* Tilpass fontfamilien til prototypen */
+  font-size: 4rem; /* Juster størrelsen for å matche prototypen */
+  font-weight: bold;
+}
+
+/* Neon hvit farge for LOADING-teksten */
+.neon-white {
+  color: white;
+  text-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white, 0 0 40px white;
+}
+
+/* Neon lilla farge for LOADING-teksten */
+.neon-purple {
+  color: #d100ff; /* Neon lilla farge */
+  text-shadow: 0 0 5px #d100ff, 0 0 10px #d100ff, 0 0 20px #d100ff, 0 0 40px #d100ff;
+}
+
+/* Tilleggsstiler for valgte avatar- og temaknappene */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.border-4 {
+  border-width: 4px;
+}
+
+.border-blue-500 {
+  border-color: #3b82f6; /* Tailwind's blue-500 farge */
+}
+
+.bg-blue-500 {
+  background-color: #3b82f6;
+}
+
+.hover\\:bg-blue-700:hover {
+  background-color: #1e3a8a;
+}
