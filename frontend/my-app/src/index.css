@@ -9,9 +9,12 @@
   padding: 0;
   box-sizing: border-box;
 }
-
 @layer utilities {
   .hero-bg {
-    @apply absolute right-0 top-0 h-screen w-screen bg-hero bg-cover bg-center;
+    @apply absolute h-screen w-screen bg-hero bg-cover bg-center;
+  }
+
+  .margin-auto {
+    @apply mx-auto w-[80%];
   }
 }
