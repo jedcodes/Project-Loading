@@ -1,4 +1,4 @@
-import { Scenario, User } from "@/types";
+import { User, Scenario } from "../types";
 import axios from "axios";
 
 const BASE_URL = "https://665654029f970b3b36c50619.mockapi.io";

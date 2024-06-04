@@ -11,7 +11,7 @@
 }
 @layer utilities {
   .hero-bg {
-    @apply absolute h-screen w-screen bg-hero bg-cover bg-center;
+    @apply absolute h-screen w-screen bg-neon bg-cover bg-center bg-no-repeat;
   }
 
   .margin-auto {

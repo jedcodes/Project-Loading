@@ -1,5 +1,5 @@
-import { fetchUser, signupNewUser } from "@/services/api";
-import { User } from "@/types";
+import { fetchUser, signupNewUser } from "../services/api"; 
+import { User } from "../types"; 
 import { create } from "zustand";
 
 interface UserStore {
