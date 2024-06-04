@@ -23,11 +23,11 @@
   border-top: 4px solid white;
   width: 40px;
   height: 40px;
-  -webkit-animation: spin 2s linear infinite; /* Safari */
+  -webkit-animation: spin 2s linear infinite; 
   animation: spin 2s linear infinite;
 }
 
-/* Safari */
+
 @-webkit-keyframes spin {
   0% { -webkit-transform: rotate(0deg); }
   100% { -webkit-transform: rotate(360deg); }
@@ -40,8 +40,8 @@
 
 /* Styling for loading-teksten */
 .loading-text {
-  font-family: 'Arial', sans-serif; /* Tilpass fontfamilien til prototypen */
-  font-size: 4rem; /* Juster størrelsen for å matche prototypen */
+  font-family: 'Arial', sans-serif; 
+  font-size: 4rem; 
   font-weight: bold;
 }
 
