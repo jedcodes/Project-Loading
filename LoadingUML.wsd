@@ -1,0 +1,87 @@
+@startuml
+
+package "Interactive Theater Web Application" {
+
+    class FrontPage {
+        +void displayWelcomeMessage()
+        +void displayQRCode()
+        +void displayManualEntryOption()
+        +void redirectToGamePage()
+        +void displayTutorial()
+    }
+
+    class GamePage {
+        -int currentGameIndex
+        +void promptForUsername()
+        +void displayActiveGame()
+        +void updateGameDisplay()
+        +void receiveAdminCommands()
+        +void displayWarningMessage()
+        +void displayRecoveryCode()
+        +void processReEntry(String recoveryCode)
+        +void displayErrorMessages()
+        +void handleUserFeedback()
+    }
+
+    class AdminPage {
+        +void monitorActivity()
+        +void adjustDisplaySettings()
+        +void resetGame()
+        +void changeBackground(String newBackground)
+        +void createGameSequence(List<String> gameOrder)
+        +void initiateGameChange()
+        +void sendDirectMessages()
+        +void simulateEvent()
+    }
+
+    class StatsPage {
+        +void displayRealTimeData()
+        +void downloadReport()
+        +void visualizeTrends()
+        +void collectFeedback()
+    }
+
+    class SupportPage {
+        +void displayFAQ()
+        +void offerLiveSupport()
+    }
+
+    class Server {
+        +void handleRequests()
+        +void sendData()
+        +void receiveData()
+        +void switchGame(String gameID)
+        +void manageUserSessions()
+        +void handleSecurityChecks()
+    }
+
+    class API_Documentation {
+        +void displayEndpointInformation()
+        +void displayRequestFormats()
+        +void displayResponseFormats()
+    }
+
+    class EnvironmentalConfig {
+        +void setupDevelopmentConfig()
+        +void setupProductionConfig()
+        +void setupTestingConfig()
+    }
+
+    FrontPage --> Server : Uses
+    GamePage --> Server : Uses
+    AdminPage --> Server : Uses
+    StatsPage --> Server : Uses
+    SupportPage --> Server : Uses
+    FrontPage "1" -- "1" GamePage : Navigates
+    AdminPage "1" -- "1" GamePage : Controls
+    AdminPage "1" -- "1" StatsPage : Updates
+    StatsPage "1" -- "1" Server : Interacts
+    SupportPage "1" -- "1" GamePage : Assists
+    GamePage --> API_Documentation : Consults
+    AdminPage --> API_Documentation : Consults
+    API_Documentation ..> Server : Describes
+    Server --> EnvironmentalConfig : Configured by
+
+}
+
+@enduml
