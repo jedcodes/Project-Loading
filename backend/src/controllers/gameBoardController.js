@@ -1,7 +1,23 @@
 import GameBoard from '../models/gameBoard.js';
 import User from '../models/user.js';
-import MiniGame from '../models/miniGame.js';
+import QnA from '../models/minigames/qna.js';
 import { io } from '../config/socketConfig.js';
+
+/**
+ * Create a new GameBoard
+ * @route POST /gameboard
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const createGameBoard = async (req, res) => {
+    try {
+        const newGameBoard = new GameBoard(req.body);
+        await newGameBoard.save();
+        res.status(201).json({ gameBoard: newGameBoard, pinCode: newGameBoard.pinCode });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating game board', error });
+    }
+};
 
 // Section: Fetch Current GameBoard State
 /**
@@ -34,8 +50,20 @@ export const loadMiniGame = async (req, res) => {
             return res.status(404).json({ message: 'GameBoard not found' });
         }
 
-        const currentMiniGameName = gameBoard.sequence[gameBoard.currentGameIndex];
-        const currentMiniGame = await MiniGame.findOne({ name: currentMiniGameName });
+        const currentMiniGameId = gameBoard.sequence[gameBoard.currentGameIndex];
+        let currentMiniGame;
+
+        switch (gameBoard.sequenceType) {
+            case 'QnA':
+                currentMiniGame = await QnA.findById(currentMiniGameId);
+                break;
+            case 'LoadingScreen':
+                currentMiniGame = await LoadingScreen.findById(currentMiniGameId);
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid mini-game type' });
+        }
+
         if (!currentMiniGame) {
             return res.status(404).json({ message: 'Mini-game not found' });
         }
@@ -139,5 +167,32 @@ export const getUserStats = async (req, res) => {
         io.emit('userStatsUpdated', { gameBoardId: req.params.gameBoardId, stats });
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving user stats', error });
+    }
+};
+
+// Section: Get Mini-Games by Type
+/**
+ * Get mini-games by type
+ * @route GET /gameboard/minigames/by-type
+ */
+export const getMiniGamesByType = async (req, res) => {
+    const { type } = req.query;
+
+    try {
+        let miniGames;
+        switch (type) {
+            case 'QnA':
+                miniGames = await QnA.find();
+                break;
+            case 'LoadingScreen':
+                miniGames = await LoadingScreen.find();
+                break;
+            default:
+                return res.status(400).json({ message: 'Invalid mini-game type' });
+        }
+
+        res.json(miniGames);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving mini-games', error });
     }
 };

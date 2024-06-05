@@ -103,7 +103,14 @@ router.post('/admin/login', async (req, res) => {
     if (username === adminUsername) {
         const isMatch = await bcrypt.compare(password, await bcrypt.hash(adminPassword, 10));
         if (isMatch) {
-            req.logIn({ username: adminUsername, role: 'admin' }, (err) => {
+            let user = await User.findOne({ username });
+            if (!user) {
+                // Create a new admin user if not exists
+                user = new User({ username, role: 'admin' });
+                await user.save();
+            }
+
+            req.logIn(user, (err) => {
                 if (err) {
                     return res.status(500).json({ message: 'Server error', err });
                 }

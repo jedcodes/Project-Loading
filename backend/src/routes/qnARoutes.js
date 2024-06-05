@@ -19,6 +19,8 @@ const answerValidation = [
     body('answerIndex').isInt({ min: 0 }).withMessage('Answer index is required')
 ];
 
+
+
 // POST endpoint to add a question
 router.post('/add-question', isAuthenticated, isAdmin, questionValidation, addQuestion);
 

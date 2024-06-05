@@ -7,7 +7,6 @@ import flash from 'connect-flash';
 import methodOverride from 'method-override';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
-import { Server as SocketIOServer } from 'socket.io';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import helmet from 'helmet';
@@ -16,10 +15,10 @@ import cors from 'cors';
 import connectDB from './src/config/db.js';
 import './src/config/passport.js';
 import { setupSocket } from './src/config/socketConfig.js';
-import authRouter from './src/routes/auth.js';
+import authRouter from './src/routes/authRoutes.js';
 import gameBoardRouter from './src/routes/gameBoardRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
-import svarPåSpårsmålRouter from './src/routes/qnARoutes.js'; // Import qnA routes
+import qnARouter from './src/routes/qnARoutes.js'; 
 import API_Documentation from './src/API_Documentation.js';
 
 dotenv.config({ path: './src/config/config.env' });
@@ -45,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Session management
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret',  // Use an environment variable for the session secret
+    secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
@@ -56,7 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Serve static files from the React app
-app.use(express.static(join(__dirname, '../frontend/build')));  // Adjust path if necessary
+app.use(express.static(join(__dirname, '../frontend/build'))); // Adjust path if necessary
 
 // Flash messages middleware
 app.use(flash());
@@ -74,7 +73,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRouter);
 app.use('/gameboard', gameBoardRouter); // Add GameBoard routes
 app.use('/user', userRouter); // Add user routes
-app.use('/qnA', svarPåSpårsmålRouter); // Add qnA routes
+app.use('/qna', qnARouter); // Add qnA routes
 
 // API Documentation setup (if applicable)
 const apiDocs = new API_Documentation(app);
@@ -82,7 +81,7 @@ apiDocs.setup();
 
 // Create HTTP server and setup WebSocket server
 const server = createServer(app);
-const io = setupSocket(server);  // Setup WebSocket communication using your function
+const io = setupSocket(server); // Setup WebSocket communication using your function
 
 // WebSocket connection handling
 io.on('connection', (socket) => {

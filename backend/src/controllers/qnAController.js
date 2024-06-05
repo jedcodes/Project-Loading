@@ -1,83 +1,64 @@
-import { qnA } from '../models/minigames/qnA.js';
-import { validationResult } from 'express-validator';
+import QnA from '../models/minigames/qna.js';
 
-// Controller for adding a question
+// Add Question to QnA Mini-Game
 export const addQuestion = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { description, questionText, options, correctOption } = req.body;
+    const { description, questionText, options } = req.body;
 
     try {
         const newQuestion = {
             questionText,
-            options: options.map(option => ({ text: option, votes: 0 })),
-            correctOption
+            options: options.map(text => ({ text, votes: 0 }))
         };
 
-        let game = await qnA.findOne({ description });
-
-        if (!game) {
-            game = new qnA({ description, questions: [newQuestion] });
+        let qnaGame = await QnA.findOne({ description });
+        if (!qnaGame) {
+            qnaGame = new QnA({ description, questions: [newQuestion] });
         } else {
-            game.questions.push(newQuestion);
+            qnaGame.questions.push(newQuestion);
         }
 
-        await game.save();
-        res.status(201).json(game);
+        await qnaGame.save();
+        res.status(201).json(qnaGame);
     } catch (error) {
-        res.status(400).json({ message: 'Error adding question', error });
+        res.status(400).json({ message: "Error creating mini-game", error });
     }
 };
 
-// Controller for fetching the current question
+// Get Current Question
 export const getCurrentQuestion = async (req, res) => {
+    const { description } = req.query;
+
     try {
-        const game = await qnA.findOne();
-        if (!game) {
-            return res.status(404).json({ message: 'No game found' });
+        const qnaGame = await QnA.findOne({ description });
+        if (!qnaGame) {
+            return res.status(404).json({ message: 'Mini-game not found' });
         }
 
-        const currentQuestion = game.questions[game.currentQuestionIndex];
+        const currentQuestion = qnaGame.questions[qnaGame.currentQuestionIndex];
         res.json(currentQuestion);
     } catch (error) {
-        res.status(400).json({ message: 'Error fetching current question', error });
+        res.status(500).json({ message: 'Error retrieving current question', error });
     }
 };
 
-// Controller for submitting an answer
+// Submit Answer
 export const submitAnswer = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    const { userId, answerIndex } = req.body;
     const { questionId } = req.params;
+    const { answerIndex } = req.body;
 
     try {
-        const game = await qnA.findOne({ "questions._id": questionId });
-        if (!game) {
-            return res.status(404).json({ message: 'Game not found' });
+        const qnaGame = await QnA.findOne({ "questions._id": questionId });
+        const question = qnaGame.questions.id(questionId);
+
+        if (question) {
+            question.options[answerIndex].votes += 1;
+            await qnaGame.save();
+
+            res.send({ message: 'Answer submitted successfully' });
+        } else {
+            res.status(404).send({ message: 'Question not found' });
         }
-
-        const question = game.questions.id(questionId);
-        if (!question) {
-            return res.status(404).json({ message: 'Question not found' });
-        }
-
-        question.options[answerIndex].votes += 1;
-
-        await game.save();
-
-        // Calculate and distribute points
-        const points = game.calculatePoints();
-        // Here you would update the user scores based on the points calculated
-
-        res.json({ message: 'Answer submitted successfully', points });
     } catch (error) {
-        res.status(400).json({ message: 'Error submitting answer', error });
+        res.status(500).json({ message: 'Error submitting answer', error });
     }
 };

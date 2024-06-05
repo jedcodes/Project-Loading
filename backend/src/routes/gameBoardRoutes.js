@@ -1,12 +1,14 @@
 import express from 'express';
 import { body, param } from 'express-validator';
 import {
+    createGameBoard,
     getGameBoard,
     updateGameBoard,
     startGameSequence,
     endGameSequence,
     getUserStats,
-    loadMiniGame
+    loadMiniGame,
+    getMiniGamesByType
 } from '../controllers/gameBoardController.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
@@ -17,6 +19,10 @@ const router = express.Router();
  * Validation middleware for gameBoardId
  */
 const gameBoardIdValidation = param('gameBoardId').isMongoId().withMessage('Invalid GameBoard ID format');
+
+
+// Route to create a new game board
+router.post('/', isAuthenticated, isAdmin, createGameBoard);
 
 // Section: Routes
 // Route to get the current gameBoard state
@@ -66,6 +72,14 @@ router.get('/:gameBoardId/stats', isAuthenticated, gameBoardIdValidation, getUse
  * @access Private
  */
 router.get('/:gameBoardId/minigame', isAuthenticated, gameBoardIdValidation, loadMiniGame);
+
+// Route to fetch mini-games by type
+/**
+ * @route GET /minigames/by-type
+ * @desc Fetch mini-games by type
+ * @access Private
+ */
+router.get('/minigames/by-type', isAuthenticated, getMiniGamesByType);
 
 // Section: Error Handling Middleware
 /**

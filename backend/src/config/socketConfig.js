@@ -92,11 +92,18 @@ function setupSocket(server) {
         });
 
         // Section: Disconnect Event
+        /**
+         * Event when a user disconnects
+         */
         socket.on('disconnect', () => {
             console.log('User disconnected:', socket.id);
         });
 
         // Section: Additional Real-Time Events
+        /**
+         * Event to handle real-time actions
+         * @param {Object} data - The data object containing the action information
+         */
         socket.on('sendAction', (data) => {
             console.log('Action received:', data);
             socket.broadcast.emit('actionReceived', data);

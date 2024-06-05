@@ -17,6 +17,28 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    // Section: Password
+    /**
+     * Password of the user
+     * @type {String}
+     * @required
+     */
+    password: {
+        type: String,
+        required: true
+    },
+    // Section: Role
+    /**
+     * Role of the user (user or admin)
+     * @type {String}
+     * @enum ['user', 'admin']
+     * @default 'user'
+     */
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
     // Section: Score
     /**
      * Score of the user

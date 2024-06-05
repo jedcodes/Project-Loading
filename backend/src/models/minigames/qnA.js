@@ -1,7 +1,11 @@
 import mongoose from 'mongoose';
 
 // Section: Schema Definition
-const qnASchema  = new mongoose.Schema({
+const qnASchema = new mongoose.Schema({
+    type: {
+        type: String,
+        default: 'QnA'
+    },
     description: { 
         type: String, 
         required: true 
@@ -33,7 +37,7 @@ const qnASchema  = new mongoose.Schema({
 });
 
 // Section: Methods
-qnASchema .methods.calculatePoints = function() {
+qnASchema.methods.calculatePoints = function() {
     const question = this.questions[this.currentQuestionIndex];
     const totalVotes = question.options.reduce((total, option) => total + option.votes, 0);
     const maxVotes = Math.max(...question.options.map(option => option.votes));
@@ -54,6 +58,5 @@ qnASchema .methods.calculatePoints = function() {
 };
 
 // Section: Model Creation
-const qnA = mongoose.model('qnA', qnASchema);
-
-export { qnA };
+const QnA = mongoose.model('QnA', qnASchema);
+export default QnA;
