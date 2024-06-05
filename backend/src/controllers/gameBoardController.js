@@ -3,7 +3,12 @@ import User from '../models/user.js';
 import MiniGame from '../models/miniGame.js';
 import { io } from '../config/socketConfig.js';
 
-// Fetch current gameBoard state
+// Section: Fetch Current GameBoard State
+/**
+ * Fetch the current state of a gameBoard
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const getGameBoard = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findById(req.params.gameBoardId).populate('players');
@@ -16,7 +21,12 @@ export const getGameBoard = async (req, res) => {
     }
 };
 
-// Load mini-game
+// Section: Load Mini-Game
+/**
+ * Load a mini-game for the current gameBoard
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const loadMiniGame = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findById(req.params.gameBoardId);
@@ -43,7 +53,12 @@ export const loadMiniGame = async (req, res) => {
     }
 };
 
-// Update gameBoard based on user actions
+// Section: Update GameBoard
+/**
+ * Update the state of the gameBoard based on user actions
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const updateGameBoard = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findByIdAndUpdate(req.params.gameBoardId, { $set: req.body }, { new: true }).populate('players');
@@ -58,7 +73,12 @@ export const updateGameBoard = async (req, res) => {
     }
 };
 
-// Start game sequence controlled by admin
+// Section: Start Game Sequence
+/**
+ * Start the game sequence controlled by the admin
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const startGameSequence = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findById(req.params.gameBoardId);
@@ -76,7 +96,12 @@ export const startGameSequence = async (req, res) => {
     }
 };
 
-// End game sequence and show stats
+// Section: End Game Sequence
+/**
+ * End the current game sequence and show stats
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const endGameSequence = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findById(req.params.gameBoardId);
@@ -93,7 +118,12 @@ export const endGameSequence = async (req, res) => {
     }
 };
 
-// Get user stats
+// Section: Get User Stats
+/**
+ * Retrieve the stats for all users in the gameBoard
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const getUserStats = async (req, res) => {
     try {
         const gameBoard = await GameBoard.findById(req.params.gameBoardId).populate('players');
@@ -111,4 +141,3 @@ export const getUserStats = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving user stats', error });
     }
 };
-

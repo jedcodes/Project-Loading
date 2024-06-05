@@ -19,6 +19,7 @@ import { setupSocket } from './src/config/socketConfig.js';
 import authRouter from './src/routes/auth.js';
 import gameBoardRouter from './src/routes/gameBoardRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
+import svarPåSpårsmålRouter from './src/routes/qnARoutes.js'; // Import qnA routes
 import API_Documentation from './src/API_Documentation.js';
 
 dotenv.config({ path: './src/config/config.env' });
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 app.use('/auth', authRouter);
 app.use('/gameboard', gameBoardRouter); // Add GameBoard routes
 app.use('/user', userRouter); // Add user routes
+app.use('/qnA', svarPåSpårsmålRouter); // Add qnA routes
 
 // API Documentation setup (if applicable)
 const apiDocs = new API_Documentation(app);

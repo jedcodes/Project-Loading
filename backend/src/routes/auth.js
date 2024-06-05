@@ -6,11 +6,18 @@ import GameBoard from '../models/gameBoard.js';
 
 const router = express.Router();
 
+// Section: Admin Credentials
 // Admin credentials from environment variables
 const adminUsername = process.env.ADMIN_USERNAME || 'admin';
 const adminPassword = process.env.ADMIN_PASSWORD || 'adminpassword';
 
-// Register User
+// Section: User Registration
+// Route to register a new user
+/**
+ * @route POST /register
+ * @desc Register a new user
+ * @access Public
+ */
 router.post('/register', async (req, res) => {
     const { username, pinCode } = req.body;
     
@@ -26,9 +33,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Username already taken' });
         }
 
-        const newUser = new User({
-            username
-        });
+        const newUser = new User({ username });
 
         // Save new user
         await newUser.save();
@@ -43,7 +48,13 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Login User
+// Section: User Login
+// Route to login a user
+/**
+ * @route POST /login
+ * @desc Login a user
+ * @access Public
+ */
 router.post('/login', async (req, res) => {
     const { username, pinCode } = req.body;
     
@@ -79,7 +90,13 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Admin Login
+// Section: Admin Login
+// Route to login an admin
+/**
+ * @route POST /admin/login
+ * @desc Login an admin
+ * @access Public
+ */
 router.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -100,7 +117,13 @@ router.post('/admin/login', async (req, res) => {
     }
 });
 
-// Logout User or Admin
+// Section: Logout
+// Route to logout a user or admin
+/**
+ * @route GET /logout
+ * @desc Logout a user or admin
+ * @access Private
+ */
 router.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {

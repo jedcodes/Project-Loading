@@ -2,7 +2,13 @@ import User from '../models/user.js';
 import GameBoard from '../models/gameBoard.js';
 import { io } from '../config/socketConfig.js';
 
-// Fetch user data by ID
+// Section: Fetch User Data
+/**
+ * Fetch user data by ID
+ * @route GET /users/:userId
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.userId);
@@ -15,7 +21,13 @@ export const getUserById = async (req, res) => {
     }
 };
 
-// Update user score
+// Section: Update User Score
+/**
+ * Update user score
+ * @route PUT /users/:userId/score
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const updateUserScore = async (req, res) => {
     try {
         const { score } = req.body;
@@ -29,7 +41,13 @@ export const updateUserScore = async (req, res) => {
     }
 };
 
-// Remove inactive user
+// Section: Remove Inactive User
+/**
+ * Remove inactive user
+ * @route DELETE /users/:userId/gameboards/:gameBoardId
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const removeInactiveUser = async (req, res) => {
     try {
         const { userId, gameBoardId } = req.params;
@@ -44,6 +62,7 @@ export const removeInactiveUser = async (req, res) => {
             await gameBoard.save();
             await User.findByIdAndDelete(userId);
             res.json({ message: 'Inactive user removed' });
+            // Emit event to notify clients about user removal
             io.to(gameBoardId).emit('userRemoved', { userId });
         } else {
             res.status(404).json({ message: 'User not found in GameBoard' });

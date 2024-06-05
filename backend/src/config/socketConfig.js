@@ -4,6 +4,12 @@ import User from '../models/user.js';
 
 let io;  // Declare io at the module level
 
+// Section: Setup Socket
+/**
+ * Function to setup Socket.IO server
+ * @param {Object} server - The HTTP server object
+ * @returns {Object} - The initialized Socket.IO server instance
+ */
 function setupSocket(server) {
     io = new SocketIOServer(server, {
         cors: {
@@ -13,9 +19,15 @@ function setupSocket(server) {
         }
     });
 
+    // Section: Connection Event
     io.on('connection', (socket) => {
         console.log('A user connected:', socket.id);
 
+        // Section: Join GameBoard Event
+        /**
+         * Event for a user to join a gameBoard
+         * @param {Object} data - The data object containing pinCode and username
+         */
         socket.on('joinGameBoard', async ({ pinCode, username }) => {
             try {
                 const gameBoard = await GameBoard.findOne({ pinCode }).populate('players');
@@ -48,6 +60,11 @@ function setupSocket(server) {
             }
         });
 
+        // Section: Leave GameBoard Event
+        /**
+         * Event for a user to leave a gameBoard
+         * @param {Object} data - The data object containing gameBoardId and userId
+         */
         socket.on('leaveGameBoard', async ({ gameBoardId, userId }) => {
             try {
                 const gameBoard = await GameBoard.findById(gameBoardId);
@@ -74,11 +91,12 @@ function setupSocket(server) {
             }
         });
 
+        // Section: Disconnect Event
         socket.on('disconnect', () => {
             console.log('User disconnected:', socket.id);
         });
 
-        // Additional real-time events here
+        // Section: Additional Real-Time Events
         socket.on('sendAction', (data) => {
             console.log('Action received:', data);
             socket.broadcast.emit('actionReceived', data);
@@ -88,4 +106,5 @@ function setupSocket(server) {
     return io;
 }
 
+// Export the io and setupSocket function
 export { io, setupSocket };

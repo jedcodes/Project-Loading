@@ -1,9 +1,11 @@
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
-import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 
-// Local Strategy for User
+// Section: Local Strategy for User
+/**
+ * Local strategy for authenticating users based on username
+ */
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {
         const user = await User.findOne({ username });
@@ -17,10 +19,22 @@ passport.use(new LocalStrategy(async (username, password, done) => {
     }
 }));
 
+// Section: Serialize User
+/**
+ * Serialize user information into the session
+ * @param {Object} user - The user object
+ * @param {Function} done - The done callback
+ */
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
+// Section: Deserialize User
+/**
+ * Deserialize user information from the session
+ * @param {String} id - The user ID
+ * @param {Function} done - The done callback
+ */
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await User.findById(id);
