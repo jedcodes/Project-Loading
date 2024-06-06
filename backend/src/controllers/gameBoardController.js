@@ -1,8 +1,11 @@
 import GameBoard from '../models/gameBoard.js';
 import User from '../models/user.js';
 import QnA from '../models/minigames/qna.js';
+//import LoadingScreen from '../models/minigames/loadingScreen.js';  // Ensure this is imported
+import Feedback from '../models/feedback.js';  // Ensure this is imported
 import { io } from '../config/socketConfig.js';
 
+// Section: Create a New GameBoard
 /**
  * Create a new GameBoard
  * @route POST /gameboard
@@ -194,5 +197,32 @@ export const getMiniGamesByType = async (req, res) => {
         res.json(miniGames);
     } catch (error) {
         res.status(500).json({ message: 'Error retrieving mini-games', error });
+    }
+};
+
+// Section: Submit Feedback
+/**
+ * Submit feedback
+ * @route POST /gameboard/feedback
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const submitFeedback = async (req, res) => {
+    try {
+        const { userId, rating, comment } = req.body;
+        const gameBoard = await GameBoard.findById(req.params.gameBoardId);
+        if (!gameBoard) {
+            return res.status(404).json({ message: 'GameBoard not found' });
+        }
+
+        const feedback = new Feedback({ user: userId, rating, comment });
+        await feedback.save();
+
+        gameBoard.feedback.push(feedback._id);
+        await gameBoard.save();
+
+        res.status(201).json({ message: 'Feedback submitted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error submitting feedback', error });
     }
 };

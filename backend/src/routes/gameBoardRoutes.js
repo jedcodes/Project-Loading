@@ -8,7 +8,8 @@ import {
     endGameSequence,
     getUserStats,
     loadMiniGame,
-    getMiniGamesByType
+    getMiniGamesByType,
+    submitFeedback
 } from '../controllers/gameBoardController.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
@@ -80,6 +81,15 @@ router.get('/:gameBoardId/minigame', isAuthenticated, gameBoardIdValidation, loa
  * @access Private
  */
 router.get('/minigames/by-type', isAuthenticated, getMiniGamesByType);
+
+
+// Route for feedback
+/**
+ * @route post /gameBoardId/feedback
+ * @desc post a feedback at the end of the gameboard
+ * @access Private
+ */
+router.post('/:gameBoardId/feedback', isAuthenticated, submitFeedback);
 
 // Section: Error Handling Middleware
 /**

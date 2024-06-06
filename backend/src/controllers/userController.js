@@ -71,3 +71,23 @@ export const removeInactiveUser = async (req, res) => {
         res.status(500).json({ message: 'Error removing inactive user', error });
     }
 };
+
+// Section: username filtering 
+/**
+ * Filtering and blacklisting usernames
+ * @route POST /users/:userId/gameboards/:gameBoardId
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const filterUsername = async (req, res, next) => {
+    try {
+        const { username } = req.body;
+        const blacklisted = await Blacklist.findOne({ username });
+        if (blacklisted) {
+            return res.status(400).json({ message: 'Username is not allowed' });
+        }
+        next();
+    } catch (error) {
+        res.status(500).json({ message: 'Error checking username', error });
+    }
+};

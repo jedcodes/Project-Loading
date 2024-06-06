@@ -3,6 +3,7 @@ import passport from 'passport';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 import GameBoard from '../models/gameBoard.js';
+import { filterUsername } from '../controllers/userController.js';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ const adminPassword = process.env.ADMIN_PASSWORD || 'adminpassword';
  * @desc Register a new user
  * @access Public
  */
-router.post('/register', async (req, res) => {
+router.post('/register', filterUsername, async (req, res) => {
     const { username, pinCode } = req.body;
     
     try {

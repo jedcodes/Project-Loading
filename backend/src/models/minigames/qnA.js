@@ -23,9 +23,14 @@ const qnASchema = new mongoose.Schema({
             votes: {
                 type: Number,
                 default: 0
+            },
+            branchTo: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Sequence'  // Branch to next sequence based on answer
             }
         }]
     }],
+
     currentQuestionIndex: {
         type: Number,
         default: 0

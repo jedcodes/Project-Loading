@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Session management
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI })
@@ -55,7 +55,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Serve static files from the React app
-app.use(express.static(join(__dirname, '../frontend/build'))); // Adjust path if necessary
+app.use(express.static(join(__dirname, '../frontend/build')));
 
 // Flash messages middleware
 app.use(flash());
@@ -69,11 +69,18 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes setup
-app.use('/auth', authRouter);
-app.use('/gameboard', gameBoardRouter); // Add GameBoard routes
-app.use('/user', userRouter); // Add user routes
-app.use('/qna', qnARouter); // Add qnA routes
+// Middleware to handle different domains
+app.use((req, res, next) => {
+    if (req.hostname === 'exemple.loading.no') //gamebord domain
+    {
+        app.use('/gameboard', gameBoardRouter);
+    } else {
+        app.use('/auth', authRouter);
+        app.use('/user', userRouter);
+        app.use('/qna', qnARouter);
+    }
+    next();
+});
 
 // API Documentation setup (if applicable)
 const apiDocs = new API_Documentation(app);
@@ -81,7 +88,7 @@ apiDocs.setup();
 
 // Create HTTP server and setup WebSocket server
 const server = createServer(app);
-const io = setupSocket(server); // Setup WebSocket communication using your function
+const io = setupSocket(server);  // Setup WebSocket communication using your function
 
 // WebSocket connection handling
 io.on('connection', (socket) => {
