@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
      */
     password: {
         type: String,
-        required: true
+        required: false // Make password optional
     },
     // Section: Role
     /**
