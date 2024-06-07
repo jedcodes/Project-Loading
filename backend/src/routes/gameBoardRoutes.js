@@ -1,5 +1,4 @@
 import express from 'express';
-import { body, param } from 'express-validator';
 import {
     createGameBoard,
     getGameBoard,
@@ -15,132 +14,263 @@ import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-//dummy:
 /**
  * @swagger
- * /gameboard/dummy:
+ * tags:
+ *   name: GameBoard
+ *   description: GameBoard management and operations
+ */
+
+/**
+ * @swagger
+ * /gameboard:
  *   post:
- *     summary: Create a dummy game board
+ *     summary: Create a new game board
  *     tags: [GameBoard]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       201:
- *         description: Dummy game board created successfully
+ *         description: GameBoard created successfully
  *       500:
- *         description: Error creating dummy game board
- */
-router.post('/dummy', async (req, res) => {
-    try {
-        const dummyGameBoard = new GameBoard({
-            pinCode: '123456',
-            currentGameIndex: 0,
-            sequence: [],
-            settings: {
-                background: 'default.jpg',
-                theme: 'standard'
-            },
-            players: [],
-            isActive: false
-        });
-        await dummyGameBoard.save();
-        res.status(201).json({ message: 'Dummy game board created successfully', gameBoard: dummyGameBoard });
-    } catch (error) {
-        res.status(500).json({ message: 'Error creating dummy game board', error });
-    }
-});
-
-
-// Section: Validation Middleware
-/**
- * Validation middleware for gameBoardId
- */
-const gameBoardIdValidation = param('gameBoardId').isMongoId().withMessage('Invalid GameBoard ID format');
-
-// Route to create a new game board
-/**
- * @route POST /
- * @desc Create a new game board
- * @access Private (Admin only)
+ *         description: Error creating game board
  */
 router.post('/', isAuthenticated, isAdmin, createGameBoard);
 
-// Section: Routes
-// Route to get the current gameBoard state
 /**
- * @route GET /:gameBoardId
- * @desc Get the current gameBoard state
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}:
+ *   get:
+ *     summary: Get the current gameBoard state
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: GameBoard state retrieved successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error retrieving gameBoard data
  */
-router.get('/:gameBoardId', isAuthenticated, gameBoardIdValidation, getGameBoard);
+router.get('/:gameBoardId', isAuthenticated, getGameBoard);
 
-// Route to update gameBoard based on user actions
 /**
- * @route POST /:gameBoardId/actions
- * @desc Update gameBoard based on user actions
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/actions:
+ *   post:
+ *     summary: Update gameBoard based on user actions
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               action:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: GameBoard updated successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error updating gameBoard
  */
-router.post('/:gameBoardId/actions', isAuthenticated, gameBoardIdValidation, body('action').not().isEmpty().withMessage('Action cannot be empty'), updateGameBoard);
+router.post('/:gameBoardId/actions', isAuthenticated, updateGameBoard);
 
-// Route to start the game sequence by the admin
 /**
- * @route POST /:gameBoardId/start
- * @desc Start the game sequence by the admin
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/start:
+ *   post:
+ *     summary: Start the game sequence by the admin
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Game sequence started successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error starting game sequence
  */
-router.post('/:gameBoardId/start', isAuthenticated, isAdmin, gameBoardIdValidation, startGameSequence);
+router.post('/:gameBoardId/start', isAuthenticated, isAdmin, startGameSequence);
 
-// Route to end the game sequence and show stats
 /**
- * @route POST /:gameBoardId/end
- * @desc End the game sequence and show stats
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/end:
+ *   post:
+ *     summary: End the game sequence and show stats
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Game sequence ended successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error ending game sequence
  */
-router.post('/:gameBoardId/end', isAuthenticated, isAdmin, gameBoardIdValidation, endGameSequence);
+router.post('/:gameBoardId/end', isAuthenticated, isAdmin, endGameSequence);
 
-// Route to get user stats at the end of the game
 /**
- * @route GET /:gameBoardId/stats
- * @desc Get user stats at the end of the game
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/stats:
+ *   get:
+ *     summary: Get user stats at the end of the game
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User stats retrieved successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error retrieving user stats
  */
-router.get('/:gameBoardId/stats', isAuthenticated, gameBoardIdValidation, getUserStats);
+router.get('/:gameBoardId/stats', isAuthenticated, getUserStats);
 
-// Route to load the current mini-game
 /**
- * @route GET /:gameBoardId/minigame
- * @desc Load the current mini-game
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/minigame:
+ *   get:
+ *     summary: Load the current mini-game
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Mini-game loaded successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error loading mini-game
  */
-router.get('/:gameBoardId/minigame', isAuthenticated, gameBoardIdValidation, loadMiniGame);
+router.get('/:gameBoardId/minigame', isAuthenticated, loadMiniGame);
 
-// Route to fetch mini-games by type
 /**
- * @route GET /minigames/by-type
- * @desc Fetch mini-games by type
- * @access Private
+ * @swagger
+ * /gameboard/minigames/by-type:
+ *   get:
+ *     summary: Fetch mini-games by type
+ *     tags: [GameBoard]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: type
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The type of mini-games to fetch
+ *     responses:
+ *       200:
+ *         description: Mini-games retrieved successfully
+ *       500:
+ *         description: Error retrieving mini-games
  */
 router.get('/minigames/by-type', isAuthenticated, getMiniGamesByType);
 
-// Route for feedback
 /**
- * @route POST /:gameBoardId/feedback
- * @desc Post feedback at the end of the gameboard
- * @access Private
+ * @swagger
+ * /gameboard/{gameBoardId}/feedback:
+ *   post:
+ *     summary: Submit feedback
+ *     tags: [GameBoard]
+ *     parameters:
+ *       - in: path
+ *         name: gameBoardId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The gameBoard ID
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               rating:
+ *                 type: number
+ *                 minimum: 1
+ *                 maximum: 5
+ *               comment:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Feedback submitted successfully
+ *       404:
+ *         description: GameBoard not found
+ *       500:
+ *         description: Error submitting feedback
  */
-router.post('/:gameBoardId/feedback', isAuthenticated, gameBoardIdValidation, submitFeedback);
+router.post('/:gameBoardId/feedback', isAuthenticated, submitFeedback);
 
-// Section: Error Handling Middleware
 /**
- * Error handling for validation results
- * @param {Object} error - The error object
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @param {Function} next - Express next middleware function
+ * @swagger
+ * /gameboard/dummy:
+ *   get:
+ *     summary: Dummy route for testing
+ *     tags: [GameBoard]
+ *     responses:
+ *       200:
+ *         description: Dummy route works!
  */
-router.use((error, req, res, next) => {
-    if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
-        return res.status(400).send({ message: error.message }); // Bad request error handling
-    }
-    next();
+router.get('/dummy', (req, res) => {
+    res.status(200).json({ message: "Dummy route works!" });
 });
 
 export default router;
