@@ -34,7 +34,7 @@ const InitialStateController = () => {
 
   return (
     <>
-    <div className="margin-auto relative h-screen flex items-center justify-center flex-col gap-6">
+    <div className="center-contents">
         <Logo />
       <div className='flex gap-5 flex-col'>
            <MyInput placeholder='Enter Game Pin' type='text' onHandleChange={setGamePin} />

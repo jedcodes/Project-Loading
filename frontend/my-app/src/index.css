@@ -13,7 +13,9 @@
     .retro-bg {
       @apply bg-cover bg-center bg-no-repeat absolute top-0 left-0 w-full h-full bg-neon;
     }
-   
+   .center-contents {
+    @apply w-[80%] mx-auto relative h-screen flex items-center justify-center flex-col gap-6
+   }
   }
 
 
