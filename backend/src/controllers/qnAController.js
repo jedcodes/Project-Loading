@@ -88,3 +88,14 @@ export const getAllQuestions = async (req, res) => {
         res.status(500).json({ message: 'Error retrieving questions', error });
     }
 };
+
+
+// Get all QnA mini-games
+export const getAllQnAGames = async (req, res) => {
+    try {
+        const games = await QnA.find({});
+        res.json(games);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving QnA mini-games', error });
+    }
+};

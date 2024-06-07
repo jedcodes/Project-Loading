@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, param } from 'express-validator';
-import { addQuestion, getCurrentQuestion, submitAnswer, getAllQuestions } from '../controllers/qnAController.js';
+import { addQuestion, getCurrentQuestion, submitAnswer, getAllQuestions, getAllQnAGames } from '../controllers/qnAController.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -128,5 +128,19 @@ router.post('/submit-answer/:questionId', isAuthenticated, answerValidation, sub
  *         description: Error retrieving questions
  */
 router.get('/all-questions', isAuthenticated, getAllQuestions);
+
+/**
+ * @swagger
+ * /qna/all-games:
+ *   get:
+ *     summary: Get all QnA mini-games
+ *     tags: [QnA]
+ *     responses:
+ *       200:
+ *         description: All QnA mini-games retrieved successfully
+ *       500:
+ *         description: Error retrieving QnA mini-games
+ */
+router.get('/all-games', isAuthenticated, getAllQnAGames);
 
 export default router;
