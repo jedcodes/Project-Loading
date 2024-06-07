@@ -9,13 +9,9 @@ dotenv.config({ path: '../src/config/config.env' });
 // Function to connect to MongoDB
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true,
-            useFindAndModify: false
+        const conn = await mongoose.connect(process.env.MONGO_URI, {
         });
-        console.log('MongoDB Connected for cron jobs');
+        console.log(`MongoDB Connected for cron jobs: ${conn.connection.host}`);
     } catch (error) {
         console.error('MongoDB connection failed:', error.message);
         process.exit(1);
