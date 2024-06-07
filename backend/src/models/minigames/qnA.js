@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
 
 // Section: Schema Definition
+/**
+ * Schema for QnA mini-game
+ */
 const qnASchema = new mongoose.Schema({
     type: {
         type: String,
@@ -30,7 +33,6 @@ const qnASchema = new mongoose.Schema({
             }
         }]
     }],
-
     currentQuestionIndex: {
         type: Number,
         default: 0
@@ -42,6 +44,10 @@ const qnASchema = new mongoose.Schema({
 });
 
 // Section: Methods
+/**
+ * Method to calculate points for the current question
+ * @returns {Array<Number>} - Points for each option based on votes
+ */
 qnASchema.methods.calculatePoints = function() {
     const question = this.questions[this.currentQuestionIndex];
     const totalVotes = question.options.reduce((total, option) => total + option.votes, 0);
@@ -63,5 +69,8 @@ qnASchema.methods.calculatePoints = function() {
 };
 
 // Section: Model Creation
+/**
+ * Create and export the QnA model
+ */
 const QnA = mongoose.model('QnA', qnASchema);
 export default QnA;

@@ -1,5 +1,10 @@
 import Feedback from '../models/feedback.js';
 
+/**
+ * Controller to submit feedback
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const submitFeedback = async (req, res) => {
     const { username, gameBoardId, feedback, stars } = req.body;
 

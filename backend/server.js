@@ -18,8 +18,9 @@ import { setupSocket } from './src/config/socketConfig.js';
 import authRouter from './src/routes/authRoutes.js';
 import gameBoardRouter from './src/routes/gameBoardRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
-import qnARouter from './src/routes/qnARoutes.js'; 
+import qnARouter from './src/routes/qnARoutes.js';
 import API_Documentation from './src/API_Documentation.js';
+import './scripts/cronJobs.js';
 
 dotenv.config({ path: './src/config/config.env' });
 connectDB();
@@ -71,8 +72,7 @@ app.use((req, res, next) => {
 
 // Middleware to handle different domains
 app.use((req, res, next) => {
-    if (req.hostname === 'exemple.loading.no') //gamebord domain
-    {
+    if (req.hostname === 'example.loading.no') { // Gameboard domain
         app.use('/gameboard', gameBoardRouter);
     } else {
         app.use('/auth', authRouter);
@@ -82,13 +82,13 @@ app.use((req, res, next) => {
     next();
 });
 
-// API Documentation setup (if applicable)
+// API Documentation setup
 const apiDocs = new API_Documentation(app);
 apiDocs.setup();
 
 // Create HTTP server and setup WebSocket server
 const server = createServer(app);
-const io = setupSocket(server);  // Setup WebSocket communication using your function
+const io = setupSocket(server);  // Setup WebSocket communication
 
 // WebSocket connection handling
 io.on('connection', (socket) => {

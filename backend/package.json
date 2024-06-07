@@ -29,6 +29,7 @@
     "method-override": "^3.0.0",
     "mongoose": "^8.4.0",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "npm": "^10.8.0",
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",

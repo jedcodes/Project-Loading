@@ -57,7 +57,10 @@ const gameBoardSchema = new mongoose.Schema({
     }
 });
 
-// game branching
+// Section: Branching Schema Definition
+/**
+ * Schema for Game Branching
+ */
 const gameBranchSchema = new mongoose.Schema({
     currentGameId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -76,5 +79,8 @@ gameBoardSchema.add({
 });
 
 // Section: Model Creation
+/**
+ * Create and export the GameBoard model
+ */
 const GameBoard = mongoose.model('GameBoard', gameBoardSchema);
 export default GameBoard;

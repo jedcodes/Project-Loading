@@ -1,6 +1,10 @@
 import QnA from '../models/minigames/qna.js';
 
-// Add Question to QnA Mini-Game
+/**
+ * Controller to add a question to QnA mini-game
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const addQuestion = async (req, res) => {
     const { description, questionText, options } = req.body;
 
@@ -24,7 +28,11 @@ export const addQuestion = async (req, res) => {
     }
 };
 
-// Get Current Question
+/**
+ * Controller to get the current question of a QnA mini-game
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const getCurrentQuestion = async (req, res) => {
     const { description } = req.query;
 
@@ -41,7 +49,11 @@ export const getCurrentQuestion = async (req, res) => {
     }
 };
 
-// Submit Answer
+/**
+ * Controller to submit an answer to a QnA question
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
 export const submitAnswer = async (req, res) => {
     const { questionId } = req.params;
     const { answerIndex } = req.body;

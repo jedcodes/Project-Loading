@@ -1,10 +1,14 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import MiniGame from '../models/miniGame.js';
-import { trykkeReaksjoner, qnA, musikkquiz } from '../miniGames/gameIndex.js';
+import QnA from '../src/models/minigames/qna.js';
+import LoadingScreen from '../src/models/minigames/loadingScreen.js';
 
 dotenv.config({ path: './src/config/config.env' });
 
+/**
+ * Function to connect to MongoDB
+ */
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
@@ -20,12 +24,15 @@ const connectDB = async () => {
     }
 };
 
+/**
+ * Function to import mini-games data into MongoDB
+ */
 const importData = async () => {
     await connectDB();
     try {
         await MiniGame.deleteMany();
 
-        const miniGames = [musikkquiz, qnA, trykkeReaksjoner].map(game => ({
+        const miniGames = [QnA, LoadingScreen].map(game => ({
             name: game.name,
             description: game.description,
             interact: game.interact.toString()

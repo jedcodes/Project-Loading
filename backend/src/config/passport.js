@@ -5,7 +5,7 @@ import User from '../models/user.js';
 
 // Section: Local Strategy for User
 /**
- * Local strategy for authenticating users based on username
+ * Local strategy for authenticating users based on username and password
  */
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {
@@ -62,7 +62,7 @@ passport.deserializeUser(async (id, done) => {
             };
             return done(null, admin);
         }
-        
+
         const user = await User.findById(id);
         done(null, user);
     } catch (err) {

@@ -1,6 +1,9 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
+/**
+ * Class to setup Swagger API documentation
+ */
 class API_Documentation {
     constructor(app) {
         this.app = app;
@@ -26,6 +29,9 @@ class API_Documentation {
         this.swaggerSpec = swaggerJSDoc(this.options);
     }
 
+    /**
+     * Function to setup Swagger UI
+     */
     setup() {
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
         console.log('Swagger UI is set up at /api-docs');

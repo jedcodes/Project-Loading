@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+// Section: Schema Definition
+/**
+ * Schema for Feedback
+ * Used to store feedback from users
+ */
 const feedbackSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -26,5 +31,9 @@ const feedbackSchema = new mongoose.Schema({
     }
 });
 
+// Section: Model Creation
+/**
+ * Create and export the Feedback model
+ */
 const Feedback = mongoose.model('Feedback', feedbackSchema);
 export default Feedback;

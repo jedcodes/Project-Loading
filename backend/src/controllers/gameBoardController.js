@@ -1,8 +1,8 @@
 import GameBoard from '../models/gameBoard.js';
 import User from '../models/user.js';
 import QnA from '../models/minigames/qna.js';
-//import LoadingScreen from '../models/minigames/loadingScreen.js';  // Ensure this is imported
-import Feedback from '../models/feedback.js';  // Ensure this is imported
+import LoadingScreen from '../models/minigames/loadingScreen.js'; 
+import Feedback from '../models/feedback.js';
 import { io } from '../config/socketConfig.js';
 
 // Section: Create a New GameBoard
@@ -145,7 +145,7 @@ export const endGameSequence = async (req, res) => {
         // Emit event to notify clients the game sequence has ended
         io.emit('gameSequenceEnded', { gameBoardId: req.params.gameBoardId });
     } catch (error) {
-        res.status(500).json({ message: 'Error ending game sequence', error });
+        res.status500().json({ message: 'Error ending game sequence', error });
     }
 };
 
@@ -177,6 +177,8 @@ export const getUserStats = async (req, res) => {
 /**
  * Get mini-games by type
  * @route GET /gameboard/minigames/by-type
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
  */
 export const getMiniGamesByType = async (req, res) => {
     const { type } = req.query;

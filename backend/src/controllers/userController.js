@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import GameBoard from '../models/gameBoard.js';
+import Blacklist from '../models/blacklist.js';
 import { io } from '../config/socketConfig.js';
 
 // Section: Fetch User Data

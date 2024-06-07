@@ -21,8 +21,12 @@ const router = express.Router();
  */
 const gameBoardIdValidation = param('gameBoardId').isMongoId().withMessage('Invalid GameBoard ID format');
 
-
 // Route to create a new game board
+/**
+ * @route POST /
+ * @desc Create a new game board
+ * @access Private (Admin only)
+ */
 router.post('/', isAuthenticated, isAdmin, createGameBoard);
 
 // Section: Routes
@@ -82,14 +86,13 @@ router.get('/:gameBoardId/minigame', isAuthenticated, gameBoardIdValidation, loa
  */
 router.get('/minigames/by-type', isAuthenticated, getMiniGamesByType);
 
-
 // Route for feedback
 /**
- * @route post /gameBoardId/feedback
- * @desc post a feedback at the end of the gameboard
+ * @route POST /:gameBoardId/feedback
+ * @desc Post feedback at the end of the gameboard
  * @access Private
  */
-router.post('/:gameBoardId/feedback', isAuthenticated, submitFeedback);
+router.post('/:gameBoardId/feedback', isAuthenticated, gameBoardIdValidation, submitFeedback);
 
 // Section: Error Handling Middleware
 /**

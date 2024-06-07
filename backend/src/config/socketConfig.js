@@ -2,7 +2,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import GameBoard from '../models/gameBoard.js';
 import User from '../models/user.js';
 
-let io;  // Declare io at the module level
+let io;
 
 // Section: Setup Socket
 /**

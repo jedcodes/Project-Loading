@@ -21,7 +21,6 @@ const sequenceSchema = new mongoose.Schema({
         answer: { type: Number, required: true },
         nextSequence: { type: mongoose.Schema.Types.ObjectId, ref: 'Sequence' }
     }],
-    
     // Section: Timestamps
     createdAt: {
         type: Date,
@@ -34,5 +33,8 @@ const sequenceSchema = new mongoose.Schema({
 });
 
 // Section: Model Creation
+/**
+ * Create and export the Sequence model
+ */
 const Sequence = mongoose.model('Sequence', sequenceSchema);
 export default Sequence;
