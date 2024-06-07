@@ -1,8 +1,8 @@
 import { Logo } from "@/components"
-import { useFetchCurrentUser,  } from "@/stores/UserStore";
+import { useFetchCurrentGameBoard } from "@/stores/GameBoardStore";
 
 const Lobby = () => {
-  const {isLoading, data:users} = useFetchCurrentUser()
+  const {data:gameBoard, loading } = useFetchCurrentGameBoard()
 
 
    
@@ -12,12 +12,10 @@ const Lobby = () => {
         <Logo />
    <div className="flex flex-row flex-wrap  ">
      {
-      isLoading ? <p>Loading...</p> : <ul>
-        {users?.map((user) => (
-         <div key={user.id} className="bg-neutral-200 p-4 rounded-full">
-          <p>{user.username}</p>
-         </div>
-        ))}
+      loading ? <p>Loading...</p> : <ul>
+      {gameBoard?.players.map((player) => {
+        return <li key={player.id}>{player.username}</li>
+      })}
       </ul>
     }
    </div>

@@ -1,9 +1,9 @@
-import MainPage from "./pages/GamePage"
+import { Landing } from "./pages"
 
 function App() {
   return (
     <div className="retro-bg">
-     <MainPage />
+     <Landing />
     </div>
   )
 }

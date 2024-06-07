@@ -1,7 +1,12 @@
 
+
+
 const MultipleChoice = () => {
+ 
   return (
-    <div>MultipleChoice</div>
+    <div>
+     
+    </div>
   )
 }
 

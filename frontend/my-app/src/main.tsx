@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-import { AdminDashboard, GamePage, Home, Lobby } from './pages'
+import { AdminDashboard, GamePage,  Landing, Lobby, Home } from './pages'
+
 
 
  const queryClient = new QueryClient()
@@ -11,6 +12,10 @@ import { AdminDashboard, GamePage, Home, Lobby } from './pages'
  const router = createBrowserRouter([
   {
     path: "/",
+    element: <Landing />
+  },
+  {
+    path: "/join",
     element: <Home />
   },
   {

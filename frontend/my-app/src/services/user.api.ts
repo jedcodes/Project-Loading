@@ -1,40 +1,25 @@
 import { User } from "@/interface/User";
 import axios from "axios";
 
-const BASE_URL = "https://665654029f970b3b36c50619.mockapi.io";
+import { BASE_URL } from "@/config";
 
-
-export const fetchUsers = async (): Promise<User[]> => {
-   try {
-    const response = await axios.get(BASE_URL + "/users", {
-      headers: { "content-type": "application/json" },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return {} as User[];
+export const signupNewUser = async (username: string, pinCode: string): Promise<User> => {
+  const response = await axios.post(BASE_URL + "/auth/register", { username, pinCode });
+  if (response.status !== 200) {
+    throw new Error('Error signing up new user');
   }
-}
-
-export const signupNewUser = async (username: string): Promise<User> => {
-  try {
-    const newUser = {
-      username: username,
-      score: 0,
-      state: {},
-    };
-    const response = await axios({
-      method: "POST",
-      url: BASE_URL + "/users",
-      headers: { "content-type": "application/json" },
-      data: newUser,
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return {} as User;
-  }
+  return response.data;
 };
 
+export const userSignIn = async (username: string, pinCode: string): Promise<User> => {
+  const response = await axios.post(BASE_URL + "/auth/login", { username, pinCode });
+  if (response.status !== 200) {
+    throw new Error('Error signing in user');
+  }
+  return response.data;
 
+}
+
+
+
+// headers: {'content-type':'application/json'}
