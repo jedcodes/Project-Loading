@@ -1,7 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: './src/config/config.env' });
-
 import express from 'express';
+import dotenv from 'dotenv';
 import session from 'express-session';
 import morgan from 'morgan';
 import { createServer } from 'http';
@@ -20,10 +18,11 @@ import { setupSocket } from './src/config/socketConfig.js';
 import authRouter from './src/routes/authRoutes.js';
 import gameBoardRouter from './src/routes/gameBoardRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
-import qnARouter from './src/routes/qnARoutes.js'; 
+import qnARouter from './src/routes/qnARoutes.js';
 import loadingScreenRouter from './src/routes/loadingScreenRoutes.js';
 import API_Documentation from './src/API_Documentation.js';
 
+dotenv.config({ path: './src/config/config.env' });
 connectDB();
 
 const app = express();
@@ -79,7 +78,6 @@ app.use((req, res, next) => {
         app.use('/auth', authRouter);
         app.use('/user', userRouter);
         app.use('/qna', qnARouter);
-        app.use('/loadingscreen', loadingScreenRouter); // Add loadingScreenRouter
     }
     next();
 });

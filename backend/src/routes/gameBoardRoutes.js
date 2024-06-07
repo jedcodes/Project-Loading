@@ -15,6 +15,40 @@ import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
+//dummy:
+/**
+ * @swagger
+ * /gameboard/dummy:
+ *   post:
+ *     summary: Create a dummy game board
+ *     tags: [GameBoard]
+ *     responses:
+ *       201:
+ *         description: Dummy game board created successfully
+ *       500:
+ *         description: Error creating dummy game board
+ */
+router.post('/dummy', async (req, res) => {
+    try {
+        const dummyGameBoard = new GameBoard({
+            pinCode: '123456',
+            currentGameIndex: 0,
+            sequence: [],
+            settings: {
+                background: 'default.jpg',
+                theme: 'standard'
+            },
+            players: [],
+            isActive: false
+        });
+        await dummyGameBoard.save();
+        res.status(201).json({ message: 'Dummy game board created successfully', gameBoard: dummyGameBoard });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating dummy game board', error });
+    }
+});
+
+
 // Section: Validation Middleware
 /**
  * Validation middleware for gameBoardId

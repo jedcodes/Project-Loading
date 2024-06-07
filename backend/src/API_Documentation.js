@@ -1,9 +1,6 @@
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-/**
- * Class to setup Swagger API documentation
- */
 class API_Documentation {
     constructor(app) {
         this.app = app;
@@ -16,7 +13,7 @@ class API_Documentation {
             },
             servers: [
                 {
-                    url: 'http://localhost:4000',
+                    url: 'http://localhost:3000',
                     description: 'Development server'
                 }
             ],
@@ -24,14 +21,11 @@ class API_Documentation {
         this.options = {
             swaggerDefinition: this.swaggerDefinition,
             // Paths to files where routes are documented
-            apis: ['./routes/*.js']
+            apis: ['./src/routes/*'] 
         };
         this.swaggerSpec = swaggerJSDoc(this.options);
     }
 
-    /**
-     * Function to setup Swagger UI
-     */
     setup() {
         this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(this.swaggerSpec));
         console.log('Swagger UI is set up at /api-docs');
@@ -39,3 +33,4 @@ class API_Documentation {
 }
 
 export default API_Documentation;
+

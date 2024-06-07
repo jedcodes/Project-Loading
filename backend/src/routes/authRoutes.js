@@ -15,13 +15,36 @@ const adminPassword = process.env.ADMIN_PASSWORD || 'adminpassword';
 // Section: User Registration
 // Route to register a new user
 /**
- * @route POST /register
- * @desc Register a new user
- * @access Public
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - pinCode
+ *             properties:
+ *               username:
+ *                 type: string
+ *               pinCode:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: Invalid pin code or username already taken
+ *       500:
+ *         description: Error registering user
  */
 router.post('/register', filterUsername, async (req, res) => {
     const { username, pinCode } = req.body;
-    
+
     try {
         const gameBoard = await GameBoard.findOne({ pinCode });
         if (!gameBoard) {
@@ -51,14 +74,9 @@ router.post('/register', filterUsername, async (req, res) => {
 
 // Section: User Login
 // Route to login a user
-/**
- * @route POST /login
- * @desc Login a user
- * @access Public
- */
 router.post('/login', async (req, res) => {
     const { username, pinCode } = req.body;
-    
+
     try {
         const gameBoard = await GameBoard.findOne({ pinCode });
         if (!gameBoard) {
@@ -93,11 +111,6 @@ router.post('/login', async (req, res) => {
 
 // Section: Admin Login
 // Route to login an admin
-/**
- * @route POST /admin/login
- * @desc Login an admin
- * @access Public
- */
 router.post('/admin/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -127,11 +140,6 @@ router.post('/admin/login', async (req, res) => {
 
 // Section: Logout
 // Route to logout a user or admin
-/**
- * @route GET /logout
- * @desc Logout a user or admin
- * @access Private
- */
 router.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
