@@ -20,10 +20,14 @@ const InitialStateController = () => {
   const handleJoinGame = () => {
     if(gamePin !== GAME_PIN) {
       alert('Invalid Game Pin')
+      setUsername('')
+      setGamePin('')
       return
     } else {
      signupMutation.mutate(username)
       navigate('/lobby')
+       setUsername('')
+      setGamePin('')
     }
   }
 
