@@ -1,0 +1,29 @@
+@tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+  }
+
+  @layer utilities {
+    .retro-bg {
+      @apply bg-cover bg-center bg-no-repeat absolute top-0 left-0 w-full h-full bg-neon;
+    }
+   
+  }
+
+
+.neon-white {
+  color: white;
+  text-shadow: 0 0 5px white, 0 0 10px white, 0 0 20px white, 0 0 40px white;
+}
+
+
+.neon-purple {
+  color: #d100ff; 
+  text-shadow: 0 0 5px #d100ff, 0 0 10px #d100ff, 0 0 20px #d100ff, 0 0 40px #d100ff;
+}
