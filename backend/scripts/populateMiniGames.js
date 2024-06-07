@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import MiniGame from '../models/miniGame.js';
-import { trykkeReaksjoner, svarPåSpørsmål, musikkquiz } from '../miniGames/gameIndex.js';
+import { trykkeReaksjoner, qnA, musikkquiz } from '../miniGames/gameIndex.js';
 
 dotenv.config({ path: './src/config/config.env' });
 
@@ -25,7 +25,7 @@ const importData = async () => {
     try {
         await MiniGame.deleteMany();
 
-        const miniGames = [musikkquiz, svarPåSpørsmål, trykkeReaksjoner].map(game => ({
+        const miniGames = [musikkquiz, qnA, trykkeReaksjoner].map(game => ({
             name: game.name,
             description: game.description,
             interact: game.interact.toString()

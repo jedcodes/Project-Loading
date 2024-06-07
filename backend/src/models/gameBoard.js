@@ -1,19 +1,31 @@
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 
+// Section: Schema Definition
+/**
+ * Schema for GameBoard
+ */
 const gameBoardSchema = new mongoose.Schema({
+    // Section: Unique PIN Code
     pinCode: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        default: function() {
+            return crypto.randomBytes(3).toString('hex').toUpperCase();
+        }
     },
+    // Section: Current Game Index
     currentGameIndex: {
         type: Number,
         default: 0
     },
+    // Section: Game Sequence
     sequence: [{
-        type: String,
-        ref: 'MiniGame'
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Sequence'
     }],
+    // Section: GameBoard Settings
     settings: {
         background: {
             type: String,
@@ -24,14 +36,17 @@ const gameBoardSchema = new mongoose.Schema({
             default: 'standard'
         }
     },
+    // Section: Players
     players: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
+    // Section: Status
     isActive: {
         type: Boolean,
         default: false
     },
+    // Section: Timestamps
     createdAt: {
         type: Date,
         default: Date.now
@@ -42,5 +57,24 @@ const gameBoardSchema = new mongoose.Schema({
     }
 });
 
+// game branching
+const gameBranchSchema = new mongoose.Schema({
+    currentGameId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        refPath: 'sequence'
+    },
+    nextGameIds: [{
+        answer: { type: Number, required: true },
+        gameId: { type: mongoose.Schema.Types.ObjectId, refPath: 'sequence' }
+    }]
+});
+
+// Add branching schema to the game board schema
+gameBoardSchema.add({
+    branches: [gameBranchSchema]
+});
+
+// Section: Model Creation
 const GameBoard = mongoose.model('GameBoard', gameBoardSchema);
 export default GameBoard;
