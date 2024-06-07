@@ -3,6 +3,23 @@ import GameBoard from '../models/gameBoard.js';
 import Blacklist from '../models/blacklist.js';
 import { io } from '../config/socketConfig.js';
 
+
+// Section: Fetch User Data
+/**
+// Fetch all users
+* @route GET /users/:userId
+* @param {Object} req - Express request object
+* @param {Object} res - Express response object
+*/
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving users', error });
+    }
+};
+
 // Section: Fetch User Data
 /**
  * Fetch user data by ID

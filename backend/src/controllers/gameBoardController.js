@@ -22,6 +22,22 @@ export const createGameBoard = async (req, res) => {
     }
 };
 
+// Section: Fetch All GameBoards
+/**
+ * Fetch all gameBoards
+ * @route GET /gameboard
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const getAllGameBoards = async (req, res) => {
+    try {
+        const gameBoards = await GameBoard.find().populate('players');
+        res.status(200).json(gameBoards);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving game boards', error });
+    }
+};
+
 // Section: Fetch Current GameBoard State
 /**
  * Fetch the current state of a gameBoard

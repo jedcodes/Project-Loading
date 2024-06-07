@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+/*import cron from 'node-cron';
 import GameBoard from '../src/models/gameBoard.js';
 import User from '../src/models/user.js';
 import mongoose from 'mongoose';
@@ -51,6 +51,7 @@ const deleteInactiveGameBoards = async () => {
     }
 };
 
-// Schedule the deletion tasks
-cron.schedule('*/20 * * * *', deleteInactiveUsers); // Run every 20 minutes
-cron.schedule('0 */12 * * *', deleteInactiveGameBoards); // Run every 12 hours
+Schedule the deletion tasks
+cron.schedule('/20 * * * *', deleteInactiveUsers); // Run every 20 minutes
+cron.schedule('0 /12 * * *', deleteInactiveGameBoards); // Run every 12 hours
+*/

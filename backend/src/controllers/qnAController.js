@@ -1,7 +1,7 @@
 import QnA from '../models/minigames/qna.js';
 
 /**
- * Controller to add a question to QnA mini-game
+ * Add a question to QnA mini-game
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
@@ -29,7 +29,7 @@ export const addQuestion = async (req, res) => {
 };
 
 /**
- * Controller to get the current question of a QnA mini-game
+ * Fetch the current question of the QnA mini-game
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
@@ -50,7 +50,7 @@ export const getCurrentQuestion = async (req, res) => {
 };
 
 /**
- * Controller to submit an answer to a QnA question
+ * Submit an answer to a QnA question
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  */
@@ -72,5 +72,19 @@ export const submitAnswer = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Error submitting answer', error });
+    }
+};
+
+/**
+ * Get all QnA questions
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const getAllQuestions = async (req, res) => {
+    try {
+        const questions = await QnA.find();
+        res.status(200).json({ questions });
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving questions', error });
     }
 };

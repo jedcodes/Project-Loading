@@ -20,6 +20,8 @@ import gameBoardRouter from './src/routes/gameBoardRoutes.js';
 import userRouter from './src/routes/userRoutes.js';
 import qnARouter from './src/routes/qnARoutes.js';
 import loadingScreenRouter from './src/routes/loadingScreenRoutes.js';
+import adminRouter from './src/routes/adminRoutes.js';
+import feedbackRouter from './src/routes/feedbackRoutes.js';
 import API_Documentation from './src/API_Documentation.js';
 
 dotenv.config({ path: './src/config/config.env' });
@@ -70,17 +72,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware to handle different domains
-app.use((req, res, next) => {
-    if (req.hostname === 'example.loading.no') { // Gameboard domain
-        app.use('/gameboard', gameBoardRouter);
-    } else {
-        app.use('/auth', authRouter);
-        app.use('/user', userRouter);
-        app.use('/qna', qnARouter);
-    }
-    next();
-});
+// Register routes
+app.use('/auth', authRouter);
+app.use('/user', userRouter);
+app.use('/qna', qnARouter);
+app.use('/admin', adminRouter);
+app.use('/feedback', feedbackRouter);
+app.use('/loadingScreen', loadingScreenRouter);
+app.use('/gameboard', gameBoardRouter);
 
 // API Documentation setup
 const apiDocs = new API_Documentation(app);
