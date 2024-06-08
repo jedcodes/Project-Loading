@@ -4,15 +4,15 @@ import Logo from './Logo';
 import MyInput from './MyInput';
 import { Button } from './ui/button';
 import { useFetchCurrentGameBoard } from '@/stores/GameBoardStore';
-import { signupNewUser, userSignIn } from '@/services/user.api';
+import { useSignUserIn } from '@/services/user.api';
 
 const JoinGame = () => {
   const [gamePin, setGamePin] = useState<string>('');
   const [username, setUsername] = useState<string>('');
   const [showUsernameInput, setShowUsernameInput] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { data, loading, error } = useFetchCurrentGameBoard();
-
+  const { data, isLoading, isError } = useFetchCurrentGameBoard();
+const { mutate } = useSignUserIn();
 
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
 
@@ -25,33 +25,18 @@ const JoinGame = () => {
     }
   };
 
-  const handleJoinGame = async () => {
-    if (gamePin !== pinCode) {
-      alert('Invalid Game Pin');
-      setUsername('');
-      setGamePin('');
-      setShowUsernameInput(false);
-    } else {
-     try {
-        await signupNewUser(username, gamePin);
-        await userSignIn(username, gamePin);
-        navigate('/lobby');
-        setUsername('');
-        setGamePin('');
-        setShowUsernameInput(false);
-      } catch (error) {
-        console.error('Error during signup or sign-in:', error); // Log error details
-        alert('An error occurred during sign up or sign-in. Please check the console for more details.');
-      }
-    }
+  const handleJoinGame =  () => {
+    mutate({username, pinCode: gamePin})
+    setShowUsernameInput(false);
+    navigate('/lobby')
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
+  if (isError) {
+    return <div>Error: </div>;
   }
 
   return (

@@ -1,7 +1,10 @@
 
 export interface User {
-      id: string;
+      _id: string;
     username: string;
      score: number;
   state: object;
+  role: string;
+  createAt: Date;
+  updatedAt: Date
 }

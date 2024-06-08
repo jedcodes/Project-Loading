@@ -1,25 +1,31 @@
-import { User } from "@/interface/User";
-import axios from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { BASE_URL } from "@/config";
+export const useSignUserIn = () => {
+  const queryClient = useQueryClient();
+  const { mutate, isError } = useMutation({
+    mutationFn: async ({ username, pinCode }: { username: string; pinCode: string }) => {
+      const body = JSON.stringify({ username, pinCode });
 
-export const signupNewUser = async (username: string, pinCode: string): Promise<User> => {
-  const response = await axios.post(BASE_URL + "/auth/register", { username, pinCode });
-  if (response.status !== 200) {
-    throw new Error('Error signing up new user');
-  }
-  return response.data;
+      const response = await fetch('http://localhost:3000/auth/register', {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        throw new Error(errorText);
+      }
+
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['gameboard']
+      });
+    }
+  });
+
+  return { mutate, isError };
 };
-
-export const userSignIn = async (username: string, pinCode: string): Promise<User> => {
-  const response = await axios.post(BASE_URL + "/auth/login", { username, pinCode });
-  if (response.status !== 200) {
-    throw new Error('Error signing in user');
-  }
-  return response.data;
-
-}
-
-
-
-// headers: {'content-type':'application/json'}
