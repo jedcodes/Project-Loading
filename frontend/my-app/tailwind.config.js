@@ -20,6 +20,14 @@ module.exports = {
       },
     },
     extend: {
+      
+      textColor: {
+        'neon-purple': '#d100ff',
+      },
+      boxShadow: {
+        'neon-purple': '0 0 5px #d100ff, 0 0 10px #d100ff, 0 0 20px #d100ff, 0 0 40px #d100ff',
+      },
+
       backgroundImage: {
         'neon': "url('assets/images/background-large.png')",
       },
