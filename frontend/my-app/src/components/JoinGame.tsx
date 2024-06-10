@@ -1,10 +1,12 @@
-import  { useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import MyInput from './MyInput';
 import { Button } from './ui/button';
 import { useFetchCurrentGameBoard } from '@/stores/GameBoardStore';
 import { useSignUserIn } from '@/services/user.api';
+import { socket } from '@/services/socketIO';
+import { useQueryClient } from '@tanstack/react-query';
 
 const JoinGame = () => {
   const [gamePin, setGamePin] = useState<string>('');
@@ -12,9 +14,21 @@ const JoinGame = () => {
   const [showUsernameInput, setShowUsernameInput] = useState<boolean>(false);
   const navigate = useNavigate();
   const { data, isLoading, isError } = useFetchCurrentGameBoard();
-const { mutate } = useSignUserIn();
-
+  const { mutate } = useSignUserIn();
+  const queryClient = useQueryClient();
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
+
+  useEffect(() => {
+    socket.on('newPlayer', () => {
+      queryClient.invalidateQueries({
+        queryKey: ['game-board']
+      });
+    });
+
+    return () => {
+      socket.off('newPlayer');
+    };
+  }, [queryClient]);
 
   const handleGamePin = () => {
     if (gamePin === pinCode) {
@@ -25,10 +39,10 @@ const { mutate } = useSignUserIn();
     }
   };
 
-  const handleJoinGame =  () => {
-    mutate({username, pinCode: gamePin})
+  const handleJoinGame = () => {
+    mutate({ username, pinCode: gamePin });
     setShowUsernameInput(false);
-    navigate('/lobby')
+    navigate('/lobby');
   };
 
   if (isLoading) {
