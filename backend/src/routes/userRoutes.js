@@ -23,7 +23,7 @@ const router = express.Router();
  *       500:
  *         description: Error retrieving users
  */
-router.get('/', isAuthenticated, getAllUsers);
+router.get('/', getAllUsers);
 
 /**
  * @swagger
