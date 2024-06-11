@@ -29,7 +29,7 @@ const qnASchema = new mongoose.Schema({
             },
             branchTo: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'Sequence'  // Branch to next sequence based on answer
+                ref: 'Sequence'  // Branch to next sequence based on maxvotes
             }
         }]
     }],
@@ -66,6 +66,30 @@ qnASchema.methods.calculatePoints = function() {
     });
 
     return points;
+};
+
+/**
+ * Method to update current question index based on max votes
+ */
+qnASchema.methods.updateCurrentQuestionIndex = async function() {
+    const question = this.questions[this.currentQuestionIndex];
+    let maxVotes = -1;
+    let branchToSequence = null;
+
+    question.options.forEach(option => {
+        if (option.votes > maxVotes) {
+            maxVotes = option.votes;
+            branchToSequence = option.branchTo;
+        }
+    });
+
+    if (branchToSequence) {
+        const nextSequence = await mongoose.model('Sequence').findById(branchToSequence);
+        if (nextSequence) {
+            this.currentQuestionIndex = nextSequence.currentQuestionIndex;
+            await this.save();
+        }
+    }
 };
 
 // Section: Model Creation

@@ -1,13 +1,13 @@
 {
   "name": "loading",
   "version": "1.0.0",
-  "description": "teractive theater web application designed to enhance the experience of theater performances by allowing participants to interact in real-time via a web-based platform.",
+  "description": "Interactive theater web application designed to enhance the experience of theater performances by allowing participants to interact in real-time via a web-based platform.",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\"",
-    "install": "cd backend && npm install && cd ../frontend && npm install",
-    "dev": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\"",
-    "build": "npm run build --prefix frontend"
+    "start": "concurrently \"npm run start --prefix backend\" \"npm run dev --prefix frontend/my-app\"",
+    "install": "cd backend && npm install && cd ../frontend/my-app && npm install",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend/my-app\"",
+    "build": "npm run build --prefix frontend/my-app"
   },
   "keywords": [],
   "author": "",
