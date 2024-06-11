@@ -1,3 +1,4 @@
+// server.js
 import express from 'express';
 import dotenv from 'dotenv';
 import session from 'express-session';
@@ -23,7 +24,9 @@ import loadingScreenRouter from './src/routes/loadingScreenRoutes.js';
 import adminRouter from './src/routes/adminRoutes.js';
 import feedbackRouter from './src/routes/feedbackRoutes.js';
 import API_Documentation from './src/API_Documentation.js';
+import scheduleCronJobs from './src/config/cronJobs.js';
 
+// Load environment variables
 dotenv.config({ path: './src/config/config.env' });
 connectDB();
 
@@ -32,7 +35,7 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Security middleware
+// Security middleware configuration
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -50,6 +53,7 @@ app.use(
   })
 );
 
+// CORS middleware configuration
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -66,7 +70,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Session management
+// Session management middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -149,6 +153,9 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('actionReceived', data);
   });
 });
+
+// Schedule the cron jobs
+scheduleCronJobs();
 
 // Start the server
 server.listen(PORT, () => {

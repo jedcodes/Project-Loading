@@ -1,24 +1,11 @@
-/*import cron from 'node-cron';
-import GameBoard from '../src/models/gameBoard.js';
-import User from '../src/models/user.js';
+// src/config/cronJobs.js
+import cron from 'node-cron';
+import GameBoard from '../models/gameBoard.js';
+import User from '../models/user.js';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-dotenv.config({ path: '../src/config/config.env' });
-
-// Function to connect to MongoDB
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGO_URI, {
-        });
-        console.log(`MongoDB Connected for cron jobs: ${conn.connection.host}`);
-    } catch (error) {
-        console.error('MongoDB connection failed:', error.message);
-        process.exit(1);
-    }
-};
-
-connectDB();
+dotenv.config({ path: '../config/config.env' });
 
 // Function to delete inactive users
 const deleteInactiveUsers = async () => {
@@ -51,7 +38,10 @@ const deleteInactiveGameBoards = async () => {
     }
 };
 
-Schedule the deletion tasks
-cron.schedule('/20 * * * *', deleteInactiveUsers); // Run every 20 minutes
-cron.schedule('0 /12 * * *', deleteInactiveGameBoards); // Run every 12 hours
-*/
+// Schedule the deletion tasks(actived when needed)
+const scheduleCronJobs = () => {
+    //cron.schedule('*/20 * * * *', deleteInactiveUsers); // Run every 20 minutes
+    //cron.schedule('0 */12 * * *', deleteInactiveGameBoards); // Run every 12 hours
+};
+
+export default scheduleCronJobs;

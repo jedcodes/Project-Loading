@@ -9,7 +9,7 @@
     "dev": "nodemon server.js",
     "test": "jest",
     "populate:minigames": "node scripts/populateMiniGames.js",
-    "populate-dummy-data": "node scripts/populateDummyData.js"
+    "populateDummyData": "node scripts/populateDummyData.js"
   },
   "jest": {
     "testEnvironment": "node"
