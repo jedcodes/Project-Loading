@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-import { AdminDashboard, GamePage,  Landing, Lobby, Home, AuthPage } from './pages'
+import { AdminDashboard, GamePage,  Landing, Lobby, Home, AuthPage, ErrorPage } from './pages'
 import { ProtectedRoute } from './components'
 import { AuthContextProvider } from './context/authContext'
 
@@ -13,23 +13,28 @@ import { AuthContextProvider } from './context/authContext'
  const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />
+    element: <Landing />,
+    errorElement: <ErrorPage />
   },
   {
     path: "/join",
-    element: <Home />
+    element: <Home />,
+    errorElement: <ErrorPage />
   },
   {
-    path: "/lobby",
-    element: <Lobby />
+    path: "/lobby/:gameBoardId",
+    element: <Lobby />,
+    errorElement: <ErrorPage />
   },
   {
     path: "/game",
-    element: <GamePage />
+    element: <GamePage />,
+    errorElement: <ErrorPage />
   },
   {
     path: "/auth",
-    element: <AuthPage />
+    element: <AuthPage />,
+    errorElement: <ErrorPage />
   },
 
   {

@@ -7,10 +7,11 @@ const Lobby = () => {
   const { data } = useFetchCurrentGameBoard();
   const currentGameboardPlayers = data && Array.isArray(data) ? data.find(item => item.players)?.players : undefined;
 
-  const visiblePlayers = currentGameboardPlayers?.slice(0, 4);
+  // Show only 4 players in the lobby, but reverse the order to show the latest player first
+ const reverted = [...currentGameboardPlayers].reverse()
+  const visiblePlayers = reverted?.slice(0, 4);
   const remainingPlayersCount = currentGameboardPlayers?.length > 4 ? currentGameboardPlayers.length - 4 : 0;
-
-  console.log(currentGameboardPlayers);
+ 
 
   return (
     <div className="retro-bg">

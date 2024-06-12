@@ -18,6 +18,8 @@ const JoinGame = () => {
   const queryClient = useQueryClient();
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
 
+  const gameBoardId = data && Array.isArray(data) ? data.find(item => item._id)?._id : undefined;
+
   useEffect(() => {
     socket.on('newPlayer', () => {
       queryClient.invalidateQueries({
@@ -42,7 +44,7 @@ const JoinGame = () => {
   const handleJoinGame = () => {
     mutate({ username, pinCode: gamePin });
     setShowUsernameInput(false);
-    navigate('/lobby');
+    navigate(`/lobby/${gameBoardId}`);
   };
 
   if (isLoading) {

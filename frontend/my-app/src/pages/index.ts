@@ -4,5 +4,6 @@ import AdminDashboard from "./AdminDashboard";
 import GamePage from "./GamePage";
 import Landing from "./Landing";
 import AuthPage from "./AuthPage";
+import ErrorPage from "./ErrorPage";
 
-export {Home, Lobby, AdminDashboard, GamePage, Landing, AuthPage}
+export {Home, Lobby, AdminDashboard, GamePage, Landing, AuthPage, ErrorPage}
