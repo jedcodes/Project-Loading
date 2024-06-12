@@ -10,7 +10,7 @@ interface AuthContextProps {
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthContextProvider = ({children}: {children: ReactNode}) => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
     const login = async (username: string, password: string) => {
        try {
@@ -24,6 +24,7 @@ export const AuthContextProvider = ({children}: {children: ReactNode}) => {
 
       if (response.status === 200) {
         console.log('Login successful')
+        setIsLoggedIn(true);
       } else {
         console.error('Login failed')
       }
