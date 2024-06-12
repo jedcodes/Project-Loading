@@ -6,5 +6,6 @@ export interface User {
   state: object;
   role: string;
   createAt: Date;
-  updatedAt: Date
+  updatedAt: Date;
+  avatar: string;
 }
