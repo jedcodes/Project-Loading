@@ -2,15 +2,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useSignUserIn = () => {
   const queryClient = useQueryClient();
-
   const { mutate, isError } = useMutation({
     mutationFn: async ({ username, pinCode }: { username: string; pinCode: string }) => {
       const body = JSON.stringify({ username, pinCode });
 
       const response = await fetch('http://localhost:3000/auth/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
+        headers: { 'Content-type': 'application/json' },
+        body
       });
 
       if (!response.ok) {
@@ -22,8 +21,10 @@ export const useSignUserIn = () => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['gameboard'] });
-    },
+      queryClient.invalidateQueries({
+        queryKey: ['gameboard']
+      });
+    }
   });
 
   return { mutate, isError };
