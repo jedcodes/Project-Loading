@@ -13,10 +13,10 @@ let io;
 function setupSocket(server) {
     io = new SocketIOServer(server, {
         cors: {
-            origin: process.env.CLIENT_URL || "http://localhost:3000",
+            origin: "http://localhost:5173", // vite server
             methods: ["GET", "POST"],
-            credentials: true
-        }
+            credentials: true,
+        },
     });
 
     // Section: Connection Event
