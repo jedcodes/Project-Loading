@@ -13,7 +13,7 @@ const JoinGame = () => {
   const [username, setUsername] = useState<string>('');
   const [showUsernameInput, setShowUsernameInput] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useFetchCurrentGameBoard();
+  const { data} = useFetchCurrentGameBoard();
   const { mutate } = useSignUserIn();
   const queryClient = useQueryClient();
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
@@ -44,14 +44,6 @@ const JoinGame = () => {
     setShowUsernameInput(false);
     navigate('/lobby');
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Error: </div>;
-  }
 
   return (
     <div className="center-contents">

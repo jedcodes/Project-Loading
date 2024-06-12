@@ -4,7 +4,7 @@ import { useFetchCurrentGameBoard } from "@/stores/GameBoardStore";
 
 const Lobby = () => {
   const {data } = useFetchCurrentGameBoard()
-  const currentGameboardPlayers = data && Array.isArray(data) ? data.find(item => item.players)?.players : undefined;
+  const currentGameboardPlayers = data && Array.isArray(data) && data.find(item => item.players)?.players
 
   console.log(currentGameboardPlayers)
    

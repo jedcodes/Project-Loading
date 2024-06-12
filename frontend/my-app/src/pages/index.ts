@@ -3,6 +3,6 @@ import Lobby from "./Lobby";
 import AdminDashboard from "./AdminDashboard";
 import GamePage from "./GamePage";
 import Landing from "./Landing";
+import AuthPage from "./AuthPage";
 
-
-export {Home, Lobby, AdminDashboard, GamePage, Landing}
+export {Home, Lobby, AdminDashboard, GamePage, Landing, AuthPage}
