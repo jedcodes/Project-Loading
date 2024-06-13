@@ -116,7 +116,7 @@ router.get('/current-question', getCurrentQuestion);
  *       500:
  *         description: Error submitting answer
  */
-router.post('/submit-answer/:questionId', isAuthenticated, answerValidation, submitAnswer);
+router.post('/submit-answer/:questionId', submitAnswer);
 
 /**
  * @swagger
