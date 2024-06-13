@@ -51,10 +51,10 @@ export const getDescription = async(req, rec) => {
  * @param {Object} res - Express response object
  */
 export const getCurrentQuestion = async (req, res) => {
-    const { description } = req.query;
+    const { questionText } = req.query;
 
     try {
-        const qnaGame = await QnA.findOne({ description });
+        const qnaGame = await QnA.findOne({ questionText });
         if (!qnaGame) {
             return res.status(404).json({ message: 'Mini-game not found' });
         }

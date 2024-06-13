@@ -82,7 +82,7 @@ router.post('/add-question', isAuthenticated, isAdmin, questionValidation, addQu
  *       500:
  *         description: Error retrieving current question
  */
-router.get('/current-question', isAuthenticated, getCurrentQuestion);
+router.get('/current-question', getCurrentQuestion);
 
 /**
  * @swagger

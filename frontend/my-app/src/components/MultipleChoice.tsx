@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 type MultipleChoiceProps = { 
-  description: string
+  questionText: string
 }
 
-const MultipleChoice = ({ description }: MultipleChoiceProps) => {
+const MultipleChoice = ({ questionText }: MultipleChoiceProps) => {
   const [currentQuestion, setCurrentQuestion] = useState<any>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
 
@@ -15,7 +15,7 @@ const MultipleChoice = ({ description }: MultipleChoiceProps) => {
         const token = localStorage.getItem('token');
         
         const response = await axios.get(`http://localhost:3000/qna/current-question`, {
-          params: { description },
+          params: { questionText },
           headers: {
           Authorization: `Bearer ${token}`
           }
@@ -27,7 +27,7 @@ const MultipleChoice = ({ description }: MultipleChoiceProps) => {
     };
 
     fetchCurrentQuestion();
-  }, [description]);
+  }, [questionText]);
 
   const handleOptionClick = async (index: number) => {
     setSelectedOption(index);
@@ -42,7 +42,7 @@ const MultipleChoice = ({ description }: MultipleChoiceProps) => {
       });
       // Refetch the question to update the votes
       const response = await axios.get(`http://localhost:3000/qna/current-question`, {
-        params: { description },
+        params: { questionText },
         headers: {
           Authorization: `Bearer ${token}`
         }
