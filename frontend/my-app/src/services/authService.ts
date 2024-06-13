@@ -1,3 +1,5 @@
+// services/authService.ts
+
 export const login = async (username: string, pinCode: string) => {
     try {
       const response = await fetch('http://localhost:3000/auth/login', {
@@ -16,6 +18,29 @@ export const login = async (username: string, pinCode: string) => {
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('username', username);
       localStorage.setItem('gameBoardId', pinCode);
+      return data;
+    } catch (error: any) {
+      console.error('Error logging in:', error);
+      throw error;
+    }
+  };
+  
+  export const adminLogin = async (username: string, password: string) => {
+    try {
+      const response = await fetch('http://localhost:3000/auth/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Admin login error:', errorText);
+        throw new Error(errorText);
+      }
+  
+      const data = await response.json();
+      localStorage.setItem('authToken', data.token);
       return data;
     } catch (error: any) {
       console.error('Error logging in:', error);

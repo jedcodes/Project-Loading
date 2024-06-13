@@ -10,22 +10,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useAuth } from "@/context/authContext";
 import { useNavigate } from "react-router-dom";
-
+import { adminLogin } from "@/services/authService";
 
 function AuthPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
-  const { login } = useAuth();
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-   const success = await login(username, password);
-    if (success) {
+    try {
+      await adminLogin(username, password);
       navigate("/admin");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error logging in:', error.message);
+        alert(error.message);
+      } else {
+        console.error('Unexpected error', error);
+        alert('An unexpected error occurred');
+      }
     }
   };
 
@@ -68,4 +73,5 @@ function AuthPage() {
     </div>
   );
 }
+
 export default AuthPage;

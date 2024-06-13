@@ -7,7 +7,7 @@ import { useFetchCurrentGameBoard } from '@/stores/GameBoardStore';
 import { useSignUserIn } from '@/services/user.api';
 import socket from '@/services/socketIO';
 import { useQueryClient } from '@tanstack/react-query';
-import { login, isAuthenticated } from '@/services/authService';
+import { getToken } from '@/services/authService';
 
 const JoinGame = () => {
   const [gamePin, setGamePin] = useState<string>('');
@@ -20,13 +20,17 @@ const JoinGame = () => {
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    const storedGameBoardId = localStorage.getItem('gameBoardId');
-
-    if (storedUsername && storedGameBoardId) {
-      navigate(`/lobby/${storedGameBoardId}`);
+    const token = getToken();
+    if (token) {
+      const storedUsername = localStorage.getItem('username');
+      const storedGameBoardId = localStorage.getItem('gameBoardId');
+      if (storedUsername && storedGameBoardId) {
+        navigate(`/lobby/${storedGameBoardId}`);
+      }
     }
+  }, [navigate]);
 
+  useEffect(() => {
     socket.on('newPlayer', () => {
       queryClient.invalidateQueries({ queryKey: ['gameboard'] });
     });
@@ -34,9 +38,9 @@ const JoinGame = () => {
     return () => {
       socket.off('newPlayer');
     };
-  }, [queryClient, navigate]);
+  }, [queryClient]);
 
-  const handleGamePin = (e: React.FormEvent) => {
+  const handleGamePin = (e:React.FormEvent) => {
     e.preventDefault();
     if (gamePin === pinCode) {
       setShowUsernameInput(true);
@@ -46,23 +50,17 @@ const JoinGame = () => {
     }
   };
 
-  const handleJoinGame = async (e: React.FormEvent) => {
+  const handleJoinGame = (e:React.FormEvent) => {
     e.preventDefault();
     mutate(
       { username, pinCode: gamePin },
       {
-        onSuccess: async () => {
-          try {
-            const response = await login(username, gamePin);
-            socket.auth = { token: response.token };
-            socket.connect();
-            queryClient.invalidateQueries({ queryKey: ['gameboard'] });
-            setShowUsernameInput(false);
-            navigate(`/lobby/${gamePin}`);
-          } catch (error: any) {
-            console.error('Error joining game:', error.message);
-            alert(error.message);
-          }
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['gameboard'] });
+          localStorage.setItem('username', username);
+          localStorage.setItem('gameBoardId', gamePin);
+          setShowUsernameInput(false);
+          navigate(`/lobby/${gamePin}`);
         },
         onError: (error: any) => {
           console.error('Error joining game:', error.message);
