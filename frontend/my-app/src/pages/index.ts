@@ -5,5 +5,6 @@ import GamePage from "./GamePage";
 import Landing from "./Landing";
 import AuthPage from "./AuthPage";
 import ErrorPage from "./ErrorPage";
+import GamePin from "./GamePin";
 
-export {Home, Lobby, AdminDashboard, GamePage, Landing, AuthPage, ErrorPage}
+export {Home, Lobby, AdminDashboard, GamePage, Landing, AuthPage, ErrorPage, GamePin}
