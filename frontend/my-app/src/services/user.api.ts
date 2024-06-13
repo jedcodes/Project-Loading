@@ -21,10 +21,8 @@ export const useSignUserIn = () => {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['gameboard']
-      });
-    }
+      queryClient.invalidateQueries({ queryKey: ['gameboard'] });
+    },
   });
 
   return { mutate, isError };

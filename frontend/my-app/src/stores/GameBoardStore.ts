@@ -7,5 +7,6 @@ export const useFetchCurrentGameBoard = () => {
     queryFn: fetchGameBoard
   })
 
+  console.log('useFetchCurrentGameBoard data:', data);
   return {data, isLoading, isError}
 };

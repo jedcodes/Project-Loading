@@ -1,11 +1,11 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from './Logo';
 import MyInput from './MyInput';
 import { Button } from './ui/button';
 import { useFetchCurrentGameBoard } from '@/stores/GameBoardStore';
 import { useSignUserIn } from '@/services/user.api';
-import { socket } from '@/services/socketIO';
+import socket from '@/services/socketIO';
 import { useQueryClient } from '@tanstack/react-query';
 
 const JoinGame = () => {
@@ -14,17 +14,13 @@ const JoinGame = () => {
   const [showUsernameInput, setShowUsernameInput] = useState<boolean>(false);
   const navigate = useNavigate();
   const { data, isLoading, isError } = useFetchCurrentGameBoard();
-  const { mutate } = useSignUserIn();
+  const { mutate, isError: mutationError } = useSignUserIn();
   const queryClient = useQueryClient();
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
 
-  const gameBoardId = data && Array.isArray(data) ? data.find(item => item._id)?._id : undefined;
-
   useEffect(() => {
     socket.on('newPlayer', () => {
-      queryClient.invalidateQueries({
-        queryKey: ['game-board']
-      });
+      queryClient.invalidateQueries({ queryKey: ['gameboard'] });
     });
 
     return () => {
@@ -42,9 +38,20 @@ const JoinGame = () => {
   };
 
   const handleJoinGame = () => {
-    mutate({ username, pinCode: gamePin });
-    setShowUsernameInput(false);
-    navigate(`/lobby/${gameBoardId}`);
+    mutate(
+      { username, pinCode: gamePin },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['gameboard'] });
+          setShowUsernameInput(false);
+          navigate('/lobby/:gameBoardId');
+        },
+        onError: (error: any) => {
+          console.error('Error joining game:', error.message);
+          alert(error.message);
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -71,6 +78,7 @@ const JoinGame = () => {
           </>
         )}
       </div>
+      {mutationError && <p className="error">An error occurred while joining the game.</p>}
     </div>
   );
 };

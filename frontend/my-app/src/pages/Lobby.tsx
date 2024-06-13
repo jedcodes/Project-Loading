@@ -4,14 +4,27 @@ import { useFetchCurrentGameBoard } from "@/stores/GameBoardStore";
 import avatarImage from "@/assets/images/Avatar.png"; 
 
 const Lobby = () => {
-  const { data } = useFetchCurrentGameBoard();
-  const currentGameboardPlayers = data && Array.isArray(data) ? data.find(item => item.players)?.players : undefined;
+  const { data, isError, isLoading } = useFetchCurrentGameBoard();
+  const currentGameboardPlayers = data && Array.isArray(data) ? data.find(item => item.players)?.players : [];
+
+  console.log(currentGameboardPlayers);
 
   // Show only 4 players in the lobby, but reverse the order to show the latest player first
  const reverted = [...currentGameboardPlayers].reverse()
   const visiblePlayers = reverted?.slice(0, 4);
   const remainingPlayersCount = currentGameboardPlayers?.length > 4 ? currentGameboardPlayers.length - 4 : 0;
- 
+  
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError || !data) {
+    return <p>Error loading game board</p>;
+  }
+
+  if (!currentGameboardPlayers || currentGameboardPlayers.length === 0) {
+    return <p>No players found</p>;
+  }
 
   return (
     <div className="retro-bg">
