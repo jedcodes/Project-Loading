@@ -1,22 +1,16 @@
-// src/routes/authRoutes.js
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs'; // Add bcryptjs for password hashing
 import User from '../models/user.js';
 import GameBoard from '../models/gameBoard.js';
 import { isAuthenticated, isAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Admin credentials from environment variables
-const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-const adminPassword = process.env.ADMIN_PASSWORD || 'adminpassword';
-
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: Authentication and user management
+ *   - name: Auth
+ *     description: Authentication and user management
  */
 
 /**
@@ -143,7 +137,7 @@ router.post('/login', async (req, res) => {
  *     requestBody:
  *       required: true
  *       content:
- *         application/json
+ *         application/json:
  *           schema:
  *             type: object
  *             required:
@@ -165,23 +159,31 @@ router.post('/login', async (req, res) => {
 router.post('/admin/login', async (req, res) => {
   const { username, password } = req.body;
 
-  try {
-    if (username === adminUsername && password === adminPassword) {
+  if (username === process.env.ADMIN_USERNAME && password === process.env.ADMIN_PASSWORD) {
+    try {
       let user = await User.findOne({ username });
       if (!user) {
         const admin = new User({ username, role: 'admin' });
         await admin.save();
-        const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Admin login successful', token });
+        req.logIn(admin, (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Server error', error: err });
+          }
+          return res.status(200).json({ message: 'Admin login successful' });
+        });
       } else {
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Admin login successful', token });
+        req.logIn(user, (err) => {
+          if (err) {
+            return res.status(500).json({ message: 'Server error', error: err });
+          }
+          return res.status(200).json({ message: 'Admin login successful' });
+        });
       }
-    } else {
-      res.status(401).json({ message: 'Invalid admin credentials' });
+    } catch (error) {
+      res.status(500).json({ message: 'Server error', error });
     }
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
+  } else {
+    res.status(401).json({ message: 'Invalid admin credentials' });
   }
 });
 

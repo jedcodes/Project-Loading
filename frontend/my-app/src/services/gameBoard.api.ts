@@ -50,7 +50,7 @@ export const endGameBoard = async (id: string): Promise<GameBoard> => {
       },
     });
    if (response.status !== 200) {
-    throw new Error('Error starting game board');
+    throw new Error('Error ending game board');
   }
   return response.data;
   } catch (error) {

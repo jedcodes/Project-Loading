@@ -1,11 +1,11 @@
-// services/authService.ts
-
-export const login = async (username: string, pinCode: string) => {
+export const adminLogin = async (username: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
+      const response = await fetch('http://localhost:3000/auth/admin/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, pinCode }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
       });
   
       if (!response.ok) {
@@ -15,9 +15,7 @@ export const login = async (username: string, pinCode: string) => {
       }
   
       const data = await response.json();
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('username', username);
-      localStorage.setItem('gameBoardId', pinCode);
+      localStorage.setItem('authToken', data.token); // Store the JWT token
       return data;
     } catch (error: any) {
       console.error('Error logging in:', error);
@@ -25,41 +23,15 @@ export const login = async (username: string, pinCode: string) => {
     }
   };
   
-  export const adminLogin = async (username: string, password: string) => {
-    try {
-      const response = await fetch('http://localhost:3000/auth/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-  
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Admin login error:', errorText);
-        throw new Error(errorText);
-      }
-  
-      const data = await response.json();
-      localStorage.setItem('authToken', data.token);
-      return data;
-    } catch (error: any) {
-      console.error('Error logging in:', error);
-      throw error;
-    }
-  };
-  
-  export const isAuthenticated = () => {
-    const token = localStorage.getItem('authToken');
-    return !!token;
+  export const logout = () => {
+    localStorage.removeItem('authToken');
   };
   
   export const getToken = () => {
     return localStorage.getItem('authToken');
   };
   
-  export const logout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('username');
-    localStorage.removeItem('gameBoardId');
+  export const isAuthenticated = () => {
+    return !!localStorage.getItem('authToken');
   };
   

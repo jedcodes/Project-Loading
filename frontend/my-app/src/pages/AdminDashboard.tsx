@@ -8,44 +8,38 @@ const AdminDashboard = () => {
   const {data} = useFetchCurrentGameBoard()
   const {logout} = useAuth()
   const navigate = useNavigate()
+  const gameBoardId = "6668dc37b5401826d3808c6d"
 
-  // This function is used to start the game board
-const handleStartGame = async () => {
-    if(data?.id){
-      try {
-        await startGameBoard(data.id)
-      } catch (error) {
-        console.error(error)
-  }
-}
-}
-
-// This function is used to end the game board
-const handleEndGame = async () => {
-  try {
-    if(data?.id) {
-      await endGameBoard(data?.id)
+  const handleStartGame = async () => {
+    try {
+      await startGameBoard(gameBoardId);
+      console.log('Game started successfully');
+    } catch (error) {
+      console.error('Error starting game:', error);
     }
-  
-  } catch(error) {
-    console.error(error)
-  
-  }
-}
+  };
 
-// This function is used to sign out Admin
-const handleSignOut = async () => {
-  await logout()
-  navigate('/')
-}
+  const handleEndGame = async () => {
+    try {
+      await endGameBoard(gameBoardId);
+      console.log('Game ended successfully');
+    } catch (error) {
+      console.error('Error ending game:', error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    logout();
+    navigate('/');
+  };
 
   return ( 
     <div className="retro-bg ">
       <Button onClick={handleSignOut}>Log out</Button>
-    <div className="center-contents">
-      <Button onClick={handleStartGame}>Start Mini Game</Button>
-      <Button onClick={handleEndGame} variant={"destructive"}>End Mini Game</Button>
-    </div>
+      <div className="center-contents">
+        <Button onClick={handleStartGame}>Start Mini Game</Button>
+        <Button onClick={handleEndGame} variant={"destructive"}>End Mini Game</Button>
+      </div>
     </div>
   )
 }
