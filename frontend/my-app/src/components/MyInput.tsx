@@ -8,7 +8,10 @@ type MyInputProps = {
 }
 const MyInput = ({onHandleChange, type, placeholder, value}: MyInputProps) => {
   return (
-    <Input  type={type} value={value} placeholder={placeholder} onChange={(e) => onHandleChange(e.target.value)} />
+ 
+     <Input  type={type} value={value} placeholder={placeholder} onChange={(e) => onHandleChange(e.target.value)} />
+  
+
   )
 }
 

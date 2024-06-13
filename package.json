@@ -15,6 +15,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.44.0",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0",
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",

@@ -1,16 +1,27 @@
-// Section: Middleware Functions
+import jwt from 'jsonwebtoken';
 
 /**
- * Middleware to check if the user is authenticated
+ * Middleware to check if the user is authenticated using JWT
  * @param {Object} req - Express request object
  * @param {Object} res - Express response object
  * @param {Function} next - Express next middleware function
  */
 export const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: 'Forbidden' });
+      }
+      req.user = user;
+      next();
+    });
+  } else {
     res.status(401).json({ message: 'Unauthorized' });
+  }
 };
 
 /**
@@ -20,8 +31,8 @@ export const isAuthenticated = (req, res, next) => {
  * @param {Function} next - Express next middleware function
  */
 export const isAdmin = (req, res, next) => {
-    if (req.isAuthenticated() && req.user && req.user.role === 'admin') {
-        return next();
-    }
-    res.status(401).json({ message: 'Unauthorized' });
+  if (req.user && req.user.role === 'admin') {
+    return next();
+  }
+  res.status(403).json({ message: 'Forbidden' });
 };

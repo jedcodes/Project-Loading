@@ -1,4 +1,3 @@
-// server.js
 import express from 'express';
 import dotenv from 'dotenv';
 import session from 'express-session';
@@ -26,7 +25,6 @@ import feedbackRouter from './src/routes/feedbackRoutes.js';
 import API_Documentation from './src/API_Documentation.js';
 import scheduleCronJobs from './src/config/cronJobs.js';
 
-// Load environment variables
 dotenv.config({ path: './src/config/config.env' });
 connectDB();
 
@@ -35,7 +33,6 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Security middleware configuration
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -53,7 +50,6 @@ app.use(
   })
 );
 
-// CORS middleware configuration
 app.use(
   cors({
     origin: 'http://localhost:5173',
@@ -61,16 +57,13 @@ app.use(
   })
 );
 
-// Parsing middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Development logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Session management middleware
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -80,15 +73,11 @@ app.use(
   })
 );
 
-// Passport initialization
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Flash messages middleware
 app.use(flash());
 app.use(methodOverride('_method'));
 
-// Global variables for flash messages
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
@@ -96,7 +85,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Register routes
 app.use('/auth', authRouter);
 app.use('/user', userRouter);
 app.use('/qna', qnARouter);
@@ -105,21 +93,17 @@ app.use('/feedback', feedbackRouter);
 app.use('/loadingScreen', loadingScreenRouter);
 app.use('/gameboard', gameBoardRouter);
 
-// API Documentation setup
 const apiDocs = new API_Documentation(app);
 apiDocs.setup();
 
-// Root endpoint for simple message
 app.get('/', (req, res) => {
   res.send('Hello World, the frontend server is on port 5173');
 });
 
-// Root endpoint for simple testing
 app.get('/test', (req, res) => {
   res.send('Hello, World!');
 });
 
-// Error handling middleware
 app.use((req, res, next) => {
   const error = new Error('Not Found');
   error.status = 404;
@@ -137,14 +121,29 @@ app.use((error, req, res, next) => {
 
 // Create HTTP server and setup WebSocket server
 const server = createServer(app);
-const io = setupSocket(server); // Setup WebSocket communication
+const io = setupSocket(server);
 
 // WebSocket connection handling
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
+  socket.on('join', (room) => {
+    socket.join(room);
+    console.log('A user joined room:', room);
+  });
+
+  socket.on('leave', (room) => {
+    socket.leave(room);
+    console.log('A user left room:', room);
+  });
+
+  socket.on('message', (data) => {
+    console.log('Received message from client:', data);
+    socket.to(data.room).emit('message', data.message);
+  });
+
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+    console.log('A user disconnected:', socket.id);
   });
 
   // Additional real-time events here
