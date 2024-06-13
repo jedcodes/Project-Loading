@@ -40,7 +40,7 @@ const deleteInactiveGameBoards = async () => {
 
 // Schedule the deletion tasks(actived when needed)
 const scheduleCronJobs = () => {
-    //cron.schedule('*/20 * * * *', deleteInactiveUsers); // Run every 20 minutes
+    //cron.schedule('*/1 * * * *', deleteInactiveUsers); // Run every 20 minutes
     //cron.schedule('0 */12 * * *', deleteInactiveGameBoards); // Run every 12 hours
 };
 

@@ -28,6 +28,23 @@ export const addQuestion = async (req, res) => {
     }
 };
 
+export const getDescription = async(req, rec) => {
+    const {description} = req.query;
+
+    try {
+        const qnaGame = await QnA.findOne({ description });
+        if (!qnaGame) {
+            return res.status(404).json({ message: 'description not found' });
+        }
+
+        const getDescription = qnaGame.questions[qnaGame.getDescriptionIndex];
+        res.json(getDescription);
+    } catch (error) {
+        res.status(500).json({ message: 'Error retrieving current description', error });
+    }
+    
+};
+
 /**
  * Fetch the current question of the QnA mini-game
  * @param {Object} req - Express request object

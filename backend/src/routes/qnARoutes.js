@@ -24,6 +24,9 @@ const answerValidation = [
  *   name: QnA
  *   description: QnA mini-game management
  */
+router.post('/description', isAuthenticated, isAdmin, questionValidation, addQuestion);
+
+router.get('/current-description', isAuthenticated, isAdmin, questionValidation, addQuestion);
 
 /**
  * @swagger

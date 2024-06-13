@@ -14,21 +14,6 @@ function setupSocket(server) {
     },
   });
 
-  io.use((socket, next) => {
-    const token = socket.handshake.auth.token;
-    if (token) {
-      jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-          return next(new Error('Authentication error'));
-        }
-        socket.user = user;
-        next();
-      });
-    } else {
-      next(new Error('Authentication error'));
-    }
-  });
-
   io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
