@@ -8,7 +8,6 @@ export const fetchGameBoard = async (): Promise<GameBoard> => {
     const response = await axios.get("http://localhost:3000/gameboard", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log('GameBoard API response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching game board:', error);
@@ -22,9 +21,6 @@ export const startGameBoard = async (id: string): Promise<GameBoard> => {
     const response = await axios.post(`http://localhost:3000/gameboard/${id}/start`, {
       headers: { "Content-type": "application/json" },
     });
-   if (response.status !== 200) {
-    throw new Error('Error starting game board');
-  }
   return response.data;
   } catch (error) {
     console.error(error);
@@ -37,9 +33,6 @@ export const endGameBoard = async (id: string): Promise<GameBoard> => {
     const response = await axios.post(`http://localhost:3000/gameboard/${id}/end`, {
       headers: { "Content-type": "application/json" },
     });
-   if (response.status !== 200) {
-    throw new Error('Error starting game board');
-  }
   return response.data;
   } catch (error) {
     console.error(error);
