@@ -12,7 +12,6 @@ export const fetchGameBoard = async (): Promise<GameBoard> => {
         "Authorization": `Bearer ${token}`
       },
     });
-    console.log('GameBoard API response:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching game board:', error);
@@ -50,10 +49,10 @@ export const endGameBoard = async (id: string): Promise<GameBoard> => {
         "Authorization": `Bearer ${token}`
       },
     });
-    if (response.status !== 200) {
-      throw new Error('Error ending game board');
-    }
-    return response.data;
+   if (response.status !== 200) {
+    throw new Error('Error starting game board');
+  }
+  return response.data;
   } catch (error) {
     console.error(error);
     return {} as GameBoard;

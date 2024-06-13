@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/context/authContext"
 import { endGameBoard, startGameBoard } from "@/services/gameBoard.api"
 import { useFetchCurrentGameBoard } from "@/stores/GameBoardStore"
+import { useNavigate } from "react-router-dom"
 
 const AdminDashboard = () => {
   const {data} = useFetchCurrentGameBoard()
   const {logout} = useAuth()
+  const navigate = useNavigate()
 
   // This function is used to start the game board
 const handleStartGame = async () => {
@@ -34,10 +36,11 @@ const handleEndGame = async () => {
 // This function is used to sign out Admin
 const handleSignOut = async () => {
   await logout()
+  navigate('/')
 }
 
   return ( 
-    <div className="bg-slate-800 ">
+    <div className="retro-bg ">
       <Button onClick={handleSignOut}>Log out</Button>
     <div className="center-contents">
       <Button onClick={handleStartGame}>Start Mini Game</Button>

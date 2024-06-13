@@ -1,9 +1,8 @@
 import axios from 'axios';
 import {createContext, ReactNode, useContext, useState} from 'react'
-
 interface AuthContextProps {
     isLoggedIn: boolean;
-    login: (username: string, password: string) => Promise<void>;
+    login: (username: string, password: string) => Promise<boolean>;
     logout: () => Promise<void>;
 }
 
@@ -12,34 +11,35 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthContextProvider = ({children}: {children: ReactNode}) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
-    const login = async (username: string, password: string) => {
-       try {
+    const login = async (username: string, password: string): Promise<boolean> => {
+    try {
       const response = await fetch('http://localhost:3000/auth/admin/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-type': 'application/json'
         },
         body: JSON.stringify({ username, password })
-      })
+      });
 
       if (response.status === 200) {
-        console.log('Login successful')
+        console.log('Login successful');
         setIsLoggedIn(true);
+        return true;
       } else {
-        console.error('Login failed')
+        return false;
       }
     } catch (error) {
-      console.error('Login failed')
+      console.error('Login failed');
+      return false;
     }
-
-    }
+  };
 
     const logout = async () => {
         try {
-          const response = await axios.get('http://localhost:3000/auth/admin/logout');
+          const response = await axios.get('http://localhost:3000/auth/logout');
             if(response.status === 200) {
                 setIsLoggedIn(false);
-            }
+            } 
         } catch (error) {
             console.error('Logout failed');
         }
