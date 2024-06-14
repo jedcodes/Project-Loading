@@ -1,22 +1,17 @@
 import { io } from 'socket.io-client';
-import { getToken } from '@/services/authService';
 
 const socket = io('http://localhost:3000', {
-  auth: {
-    token: getToken(),
-  },
+  withCredentials: true,
+  autoConnect: true,
+  transports: ['websocket'],
 });
 
 socket.on('connect', () => {
-  console.log('Connected to server');
+  console.log('Connected to WebSocket server');
 });
 
-socket.on('disconnect', (reason) => {
-  console.log('Disconnected from server:', reason);
-});
-
-socket.on('connect_error', (error) => {
-  console.error('Connection error:', error);
+socket.on('disconnect', () => {
+  console.log('Disconnected from WebSocket server');
 });
 
 export default socket;

@@ -127,9 +127,9 @@ const io = setupSocket(server);
 io.on('connection', (socket) => {
   console.log('A user connected:', socket.id);
 
-  socket.on('join', (room) => {
-    socket.join(room);
-    console.log('A user joined room:', room);
+  socket.on('join', (username) => {
+    users[socket.id] = username;
+    console.log(`${username} connected with id ${socket.id}`);
   });
 
   socket.on('leave', (room) => {
@@ -137,21 +137,32 @@ io.on('connection', (socket) => {
     console.log('A user left room:', room);
   });
 
-  socket.on('message', (data) => {
-    console.log('Received message from client:', data);
-    socket.to(data.room).emit('message', data.message);
+  socket.on('joinGameBoard', (gameBoardId) => {
+    socket.join(gameBoardId);
+    console.log(`Client joined gameBoard: ${gameBoardId}`);
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
+    console.log('Client disconnected');
   });
 
-  // Additional real-time events here
   socket.on('sendAction', (data) => {
     console.log('Action received:', data);
     socket.broadcast.emit('actionReceived', data);
   });
+
+  socket.on('startGame', ({ gameBoardId }) => {
+    console.log(`Starting game for gameBoard: ${gameBoardId}`);
+    io.to(gameBoardId).emit('startGame');
+  });
+
+  socket.on('nextMiniGame', ({ gameBoardId }) => {
+    console.log(`Moving to next mini-game for gameBoard: ${gameBoardId}`);
+    io.to(gameBoardId).emit('nextMiniGame');
+  });
 });
+
+
 
 // Schedule the cron jobs
 scheduleCronJobs();

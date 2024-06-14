@@ -18,7 +18,7 @@ const MultipleChoice = ({ questionText }: MultipleChoiceProps) => {
         const response = await axios.get(`http://localhost:3000/qna/current-question`, {
           params: { questionText },
           headers: {
-          Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`
           }
         });
         setCurrentQuestion(response.data);
@@ -79,5 +79,3 @@ const MultipleChoice = ({ questionText }: MultipleChoiceProps) => {
 };
 
 export default MultipleChoice;
-
-

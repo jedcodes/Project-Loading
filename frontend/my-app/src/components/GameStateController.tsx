@@ -1,4 +1,4 @@
-import {ClickerEvent, Loading, MultipleChoice} from '@/components'
+import { ClickerEvent, Loading, MultipleChoice } from '@/components'
 
 const DATA = {
   type: 'Q&A',
@@ -11,7 +11,7 @@ const GameStateController = () => {
 
   switch(DATA.type) {
     case 'Q&A':
-      GAME_CONTENT = <MultipleChoice options={DATA.options} votes={DATA.votes}/>
+      GAME_CONTENT = <MultipleChoice options={DATA.options} votes={DATA.votes} />
       break;
     case 'Clicker':
       GAME_CONTENT = <ClickerEvent />
@@ -25,4 +25,4 @@ const GameStateController = () => {
   )
 }
 
-export default GameStateController
+export default GameStateController;

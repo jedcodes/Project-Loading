@@ -7,7 +7,7 @@ import { useFetchCurrentGameBoard } from '@/stores/GameBoardStore';
 import { useSignUserIn } from '@/services/user.api';
 import socket from '@/services/socketIO';
 import { useQueryClient } from '@tanstack/react-query';
-import { getToken } from '@/services/authService';
+import { useAuth } from '@/context/authContext';
 
 const JoinGame = () => {
   const [gamePin, setGamePin] = useState<string>('');
@@ -17,18 +17,8 @@ const JoinGame = () => {
   const { data, isLoading, isError } = useFetchCurrentGameBoard();
   const { mutate, isError: mutationError } = useSignUserIn();
   const queryClient = useQueryClient();
+  const { logout } = useAuth();
   const pinCode = data && Array.isArray(data) ? data.find(item => item.pinCode)?.pinCode : undefined;
-
-  useEffect(() => {
-    const token = getToken();
-    if (token) {
-      const storedUsername = localStorage.getItem('username');
-      const storedGameBoardId = localStorage.getItem('gameBoardId');
-      if (storedUsername && storedGameBoardId) {
-        navigate(`/lobby/${storedGameBoardId}`);
-      }
-    }
-  }, [navigate]);
 
   useEffect(() => {
     socket.on('newPlayer', () => {
@@ -40,7 +30,7 @@ const JoinGame = () => {
     };
   }, [queryClient]);
 
-  const handleGamePin = (e:React.FormEvent) => {
+  const handleGamePin = (e: React.FormEvent) => {
     e.preventDefault();
     if (gamePin === pinCode) {
       setShowUsernameInput(true);
@@ -50,17 +40,18 @@ const JoinGame = () => {
     }
   };
 
-  const handleJoinGame = (e:React.FormEvent) => {
+  const handleJoinGame = (e: React.FormEvent) => {
     e.preventDefault();
     mutate(
       { username, pinCode: gamePin },
       {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['gameboard'] });
+        onSuccess: (data) => {
+          localStorage.setItem('token', data.token);
           localStorage.setItem('username', username);
-          localStorage.setItem('gameBoardId', gamePin);
+          localStorage.setItem('gameBoardPinCode', gamePin); // Save the game pin code
+          queryClient.invalidateQueries({ queryKey: ['gameboard'] });
           setShowUsernameInput(false);
-          navigate(`/lobby/${gamePin}`);
+          navigate('/lobby/:gameBoardId');
         },
         onError: (error: any) => {
           console.error('Error joining game:', error.message);
@@ -68,6 +59,11 @@ const JoinGame = () => {
         },
       }
     );
+  };
+
+  const handleSignOut = () => {
+    logout();
+    navigate('/');
   };
 
   if (isLoading) {
@@ -85,16 +81,19 @@ const JoinGame = () => {
         {!showUsernameInput ? (
           <form onSubmit={handleGamePin}>
             <MyInput placeholder="Enter Game Pin" value={gamePin} type="text" onHandleChange={setGamePin} />
-            <Button type="submit">Enter Pin</Button>
+            <Button>Enter Pin</Button>
           </form>
         ) : (
-          <form onSubmit={handleJoinGame}>
-            <MyInput placeholder="Enter Username" value={username} type="text" onHandleChange={setUsername} />
-            <Button type="submit">Join Game</Button>
-          </form>
+          <>
+            <form onSubmit={handleJoinGame}>
+              <MyInput placeholder="Enter Username" value={username} type="text" onHandleChange={setUsername} />
+              <Button>Join Game</Button>
+            </form>
+          </>
         )}
       </div>
       {mutationError && <p className="error">An error occurred while joining the game.</p>}
+      {showUsernameInput && <Button onClick={handleSignOut} className="fixed bottom-0 left-0 m-4">Quit</Button>}
     </div>
   );
 };

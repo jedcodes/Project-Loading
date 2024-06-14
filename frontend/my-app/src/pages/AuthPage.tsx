@@ -1,37 +1,28 @@
+// src/pages/AuthPage.tsx
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/authContext";
+import { useNavigate } from "react-router-dom";
 
 function AuthPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
+
   const { login } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(username, password);
+    console.log('Attempting login with:', { username, password });
+    const success = await login(username, password);
+    if (success) {
       navigate("/admin");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error('Error logging in:', error.message);
-        alert(error.message);
-      } else {
-        console.error('Unexpected error', error);
-        alert('An unexpected error occurred');
-      }
+    } else {
+      alert("Login failed. Please check your credentials.");
     }
   };
 

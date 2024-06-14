@@ -66,7 +66,9 @@ router.post('/register', async (req, res) => {
     gameBoard.players.push(newUser._id);
     await gameBoard.save();
 
-    res.status(201).json({ message: 'User registered successfully', user: newUser });
+    const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.status(201).json({ message: 'User registered successfully', user: newUser, token });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ message: 'Error registering user', error });
@@ -163,27 +165,17 @@ router.post('/admin/login', async (req, res) => {
     try {
       let user = await User.findOne({ username });
       if (!user) {
-        const admin = new User({ username, role: 'admin' });
-        await admin.save();
-        req.logIn(admin, (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Server error', error: err });
-          }
-          return res.status(200).json({ message: 'Admin login successful' });
-        });
-      } else {
-        req.logIn(user, (err) => {
-          if (err) {
-            return res.status(500).json({ message: 'Server error', error: err });
-          }
-          return res.status(200).json({ message: 'Admin login successful' });
-        });
+        user = new User({ username, role: 'admin' });
+        await user.save();
       }
+      
+      const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      return res.status(200).json({ message: 'Admin login successful', token });
     } catch (error) {
-      res.status(500).json({ message: 'Server error', error });
+      return res.status(500).json({ message: 'Server error', error });
     }
   } else {
-    res.status(401).json({ message: 'Invalid admin credentials' });
+    return res.status(401).json({ message: 'Invalid admin credentials' });
   }
 });
 

@@ -1,4 +1,6 @@
+// services/user.api.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axiosInstance from './axiosInstance';
 
 export const useSignUserIn = () => {
   const queryClient = useQueryClient();
@@ -28,32 +30,15 @@ export const useSignUserIn = () => {
   return { mutate, isError };
 };
 
-export const useLoginUser = () => {
+export const useVote = () => {
   const queryClient = useQueryClient();
-  const { mutate, isError } = useMutation({
-    mutationFn: async ({ username, pinCode }: { username: string; pinCode: string }) => {
-      const body = JSON.stringify({ username, pinCode });
-
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: { 'Content-type': 'application/json' },
-        body
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error response:', errorText);
-        throw new Error(errorText);
-      }
-
-      const data = await response.json();
-      localStorage.setItem('authToken', data.token); // Store the JWT token
-      return data;
+  return useMutation({
+    mutationFn: async ({ userId, questionId, optionIndex }: { userId: string, questionId: string, optionIndex: number }) => {
+      const response = await axiosInstance.post(`/user/${userId}/vote`, { questionId, optionIndex });
+      return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['gameboard'] });
+      queryClient.invalidateQueries({ queryKey: ['currentQuestion'] });
     },
   });
-
-  return { mutate, isError };
 };

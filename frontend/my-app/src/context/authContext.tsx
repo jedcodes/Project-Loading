@@ -1,53 +1,61 @@
-import axios from 'axios';
-import {createContext, ReactNode, useContext, useState} from 'react'
-interface AuthContextProps {
-    isLoggedIn: boolean;
-    login: (username: string, password: string) => Promise<boolean>;
-    logout: () => Promise<void>;
+// src/context/authContext.tsx
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { adminLogin, logout as authLogout, isAdmin as checkIsAdmin, isAuthenticated as checkIsAuthenticated } from '@/services/authService';
+
+type UserType = {
+  _id: string;
+  username: string;
+  role: string;
+};
+
+type AuthContextType = {
+  user: UserType | null;
+  isAdmin: boolean;
+  isAuthenticated: boolean;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => void;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+interface AuthProviderProps {
+  children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContextProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const [user, setUser] = useState<UserType | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-export const AuthContextProvider = ({children}: {children: ReactNode}) => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  useEffect(() => {
+    const authenticated = checkIsAuthenticated();
+    setIsAuthenticated(authenticated);
+  }, []);
 
-    const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string) => {
     try {
-      const response = await fetch('http://localhost:3000/auth/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-      });
-
-      if (response.status === 200) {
-        console.log('Login successful');
-        setIsLoggedIn(true);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      console.error('Login failed');
+      const data = await adminLogin(username, password);
+      setUser(data.user);
+      setIsAuthenticated(true);
+      return true;
+    } catch {
       return false;
     }
   };
 
-    const logout = async () => {
-        try {
-          const response = await axios.get('http://localhost:3000/auth/logout');
-            if(response.status === 200) {
-                setIsLoggedIn(false);
-            } 
-        } catch (error) {
-            console.error('Logout failed');
-        }
-    }
+  const logout = () => {
+    setUser(null);
+    setIsAuthenticated(false);
+    authLogout();
+  };
 
-    return <AuthContext.Provider value={{isLoggedIn, login, logout}}>{children}</AuthContext.Provider>
-}
+  const isAdmin = checkIsAdmin();
 
+  return (
+    <AuthContext.Provider value={{ user, isAdmin, isAuthenticated, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

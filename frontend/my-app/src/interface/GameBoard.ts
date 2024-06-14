@@ -1,7 +1,7 @@
 import { User } from "./User";
 
 export interface GameBoard {
-    id: string;
+    _id: string;
     pinCode: string;
     currentGameIndex: number;
     sequence: string[];

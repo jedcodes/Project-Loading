@@ -1,5 +1,12 @@
 import express from 'express';
-import { getAllUsers, getUserById, updateUserScore, removeInactiveUser } from '../controllers/userController.js';
+import {
+  getAllUsers,
+  getUserById,
+  updateUserScore,
+  removeInactiveUser,
+  updateUserVote,
+  removeUserFromGameBoard
+} from '../controllers/userController.js';
 import { isAuthenticated } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -20,10 +27,18 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: List of all users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
  *       500:
  *         description: Error retrieving users
  */
 router.get('/', getAllUsers);
+
+router.post('/remove', removeUserFromGameBoard);
 
 /**
  * @swagger
@@ -41,6 +56,10 @@ router.get('/', getAllUsers);
  *     responses:
  *       200:
  *         description: User data
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       404:
  *         description: User not found
  *       500:
@@ -67,11 +86,10 @@ router.get('/:userId', isAuthenticated, getUserById);
  *         application/json:
  *           schema:
  *             type: object
- *             required:
- *               - score
  *             properties:
  *               score:
  *                 type: number
+ *                 description: The new score of the user
  *     responses:
  *       200:
  *         description: User score updated successfully
@@ -111,4 +129,40 @@ router.put('/:userId/score', isAuthenticated, updateUserScore);
  */
 router.delete('/:gameBoardId/user/:userId', isAuthenticated, removeInactiveUser);
 
+
+
+/**
+ * @swagger
+ * /user/{userId}/vote:
+ *   post:
+ *     summary: Update user vote
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               vote:
+ *                 type: number
+ *                 description: The new vote count for the user
+ *     responses:
+ *       200:
+ *         description: Vote updated successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Error updating vote
+ */
+router.post('/:userId/vote', isAuthenticated, updateUserVote);
+
 export default router;
+
